@@ -15,7 +15,7 @@
     - [1.4 Why This Project Is Worth Pursuing](#14-why-this-project-is-worth-pursuing)
 - [2. Objective](#2-objective)
 - [3. Architecture Approach](#3-Architecture-Approach)
-    - [3.1 Frontend](#31-Frontend)
+    - [3.1 Frontend](#31-frontend)
     - [3.2 Backend](#32-Backend)
     - [3.3 Database ](#33-Database)
     - [3.4 Deployment](#34-Deployment)
