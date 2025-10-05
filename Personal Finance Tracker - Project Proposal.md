@@ -90,7 +90,7 @@ Build a Rust-based personal finance tracker that exposes a secure HTTPS REST API
 
 ## 3. **Architecture Approach**
 
-### 3.1 Frontend (Ratatui TUI and CLI)
+### **3.1 Frontend (Ratatui TUI and CLI)**
 
 - Interaction: keyboard-first forms, lists, reconciliation flows, and report views
 - Core tasks: fast entry, category and tag selection, split input, account transfers, search and filtering
@@ -98,7 +98,7 @@ Build a Rust-based personal finance tracker that exposes a secure HTTPS REST API
 - Config: stores server address and token in a local config file with protected secrets
 - Resilience: allows offline entry and retries sync when a connection is available
 
-### 3.2 Backend (Axum HTTPS service)
+### **3.2 Backend (Axum HTTPS service)**
 
 - Expose a secure HTTPS REST API with unified routing and middleware
 - Routing & middleware: Axum on top of Tower layers for auth, logging, timeouts, compression, and rate-limits.
@@ -109,7 +109,7 @@ Build a Rust-based personal finance tracker that exposes a secure HTTPS REST API
 - Structured logs and metrics, health and readiness probes, generated OpenAPI spec
 - Background work: async jobs for CSV/OFX import, auto-categorization hints, reconciliation suggestions, and report pre-computation; idempotent with retries.
 
-### 3.3 Database (PostgreSQL with SQLx)
+### **3.3 Database (PostgreSQL with SQLx)**
 
 - Create a transaction and its splits in one database transaction; validate split totals on both service and database sides.
 - Money safety: store monetary amounts as numeric to avoid floating-point errors; avoid the money type for primary storage due to locale and precision caveats.
@@ -118,7 +118,7 @@ Build a Rust-based personal finance tracker that exposes a secure HTTPS REST API
 - Index all foreign keys; use materialized views or periodic pre-computation for heavy reports
 - First-class export and backup so users keep full ownership of their data
 
-### 3.4 Deployment (Docker and Docker Compose, DigitalOcean)
+### **3.4 Deployment (Docker and Docker Compose, DigitalOcean)**
 
 - One-command dev: compose file brings up Postgres and the API with seed data; the TUI targets the local server.
 - Production: reverse proxy with TLS, environment-based secrets or a secret manager, least-privilege tokens.
