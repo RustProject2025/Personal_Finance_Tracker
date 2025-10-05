@@ -6,15 +6,15 @@
 | Yiyang Wang | 1010033278 |
 
 
--->
+
 <!-- !toc (minlevel=2 omit="Table of Contents") -->
 - [1. Motivation](#1-motivation)
     - [1.1 Target Users](#11-target-users)
     - [1.2 Existing Solutions & Limitations](#12-existing-solutions--limitations)
     - [1.3 How Our Project Solves These Issues](#13-how-our-project-solves-these-issues)
     - [1.4 Why This Project Is Worth Pursuing](#14-why-this-project-is-worth-pursuing)
-- [2. Architecture Approach](#2-objective)
-- [3. Project Objective](#3-project-objective)
+- [2. Objective](#2-objective)
+- [3. Architecture Approach](#3-Architecture-Approach)
 - [4. Key Features](#4-key-features)
     - [4.1 User Authentication and Role Management](#41-user-authentication-and-role-management)
     - [4.2 Payment System](#42-payment-system)
