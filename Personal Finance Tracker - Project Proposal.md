@@ -90,53 +90,68 @@ Build a Rust-based personal finance tracker that exposes a secure HTTPS REST API
 
 ### **4.1 Account Management**
 
-- **User registration and authentication**
+- User registration and authentication
     - Implement secure password hashing using bcrypt.
     - Store user credentials and sessions securely in the database.
-- **Multiple accounts per user**
+- Multiple accounts per user
     - Support checking, savings, and credit accounts.
     - Each account maintains its balance, currency type, and transaction history.
-- **Account summary and queries**
+- Account summary and queries
     - returns current balance and metadata.
     - Real-time aggregation of balances across all accounts.
+- Auditing and Traceability
+    - All write operations are logged in the audit log for easy traceability and compliance checks.
 
 ### 4.2 Transaction Recording and Categories
 
-- **Transaction model**
+- Transaction model
     - Each transaction has an amount, category, date, and description.
     - Supports income, expense, and transfer types.
-- **Category management**
+- Category management
     - Predefined categories (Bonus, Salary, Stock, Food, Rent, Travel, Utilities).
     - Users can create custom categories and tags.
-- **REST API Endpoints**
+- REST API Endpoints
     - add a new transaction.
     - list transactions by date range, category, or account.
+- Query and Export
+    - Filter by time window, account, category, and keyword; export to CSV is supported.
 
-### 4.3 Budgeting (Enhancement)
+### 4.3 Reconciliation and Imports
 
-- **Budget tracking**
+- Reconciliation Process
+    - Import CSV or OFX bank statements. The system provides matching suggestions based on amount and date, supporting confirmation, rejection, and difference marking.
+- Import Jobs
+    - Import tasks are processed asynchronously in the background, with retry options for failed tasks. Unmatched items are placed in a to-do list for user reconfirmation.
+
+### 4.4 Budgeting (Enhancement)
+
+- Budget tracking
     - Users can set monthly or category-level budgets.
     - The system calculates progress and remaining allowance.
+- Reports
+    - Views include cash flow, expenditure by category, net asset changes, and income-to-expense ratio; detailed reports can be exported.
+- TUI Display
+    - Budget progress and key indicators are intuitively displayed on the terminal dashboard.
 
-### 4.4 Data Storage and Security
+### 4.5 Data Storage and Security
 
-- **Database:** PostgreSQL (accessed via SQLx).
+- Database: PostgreSQL (accessed via SQLx).
     - Ensures ACID compliance and efficient relational querying.
-- **Secure communications**
+- Secure communications
     - All backend APIs served over HTTPS.
     - Input validation and parameterized queries to prevent SQL injection.
 
-### 4.5 Command-Line User Interface (CLI)
+### 4.6 Command-Line User Interface (CLI)
 
 - Built with Ratatui, providing a text-based dashboard.
-- **Layout**
+- Layout
     - Left: account list and balances.
     - Center: recent transactions.
     - Right: budget summaries.
 - Interactive navigation using arrow keys or commands.
 - Communicates with backend REST API through HTTPS requests.
 
-### 4.6 Deployment (If Time Allows)
+### 4.7 Deployment (If Time Allows)
 
 - The system can run entirely locally, or optionally deploy the HTTPS backend to a cloud platform (e.g., DigitalOcean) for multi-device access.
 - This architecture supports both local-first and self-hosted modes.
