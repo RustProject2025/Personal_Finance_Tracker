@@ -1,0 +1,52 @@
+# === Rust build artifacts ===
+/target/
+**/*.rs.bk
+
+# === Cargo and build cache ===
+Cargo.lock
+/.cargo/
+/*.crate
+
+# === IDE & Editor ===
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+*.log
+
+# === Environment files ===
+.env
+
+# === Database files ===
+*.sqlite
+sqlx-data.json  # SQLx offline mode 文件，可选忽略
+
+# === OS-specific ===
+Thumbs.db
+ehthumbs.db
+
+# === Docker ===
+/docker-compose.override.yml
+*.pid
+*.sock
+
+# === Logs and temp ===
+logs/
+tmp/
+*.tmp
+*.bak
+*.old
+
+# === SSL / HTTPS certificates ===
+certs/
+*.pem
+*.key
+*.crt
+
+# === Misc ===
+*.tar.gz
+*.zip
+*.7z
+
+.DS_Store
