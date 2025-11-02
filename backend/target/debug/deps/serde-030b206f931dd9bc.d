@@ -1,0 +1,14 @@
+/Users/yw/Downloads/ECE1724 Rust/Personal_Finance_Tracker/backend/target/debug/deps/serde-030b206f931dd9bc.d: /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/yw/Downloads/ECE1724\ Rust/Personal_Finance_Tracker/backend/target/debug/build/serde-1f259c737b352886/out/private.rs
+
+/Users/yw/Downloads/ECE1724 Rust/Personal_Finance_Tracker/backend/target/debug/deps/libserde-030b206f931dd9bc.rlib: /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/yw/Downloads/ECE1724\ Rust/Personal_Finance_Tracker/backend/target/debug/build/serde-1f259c737b352886/out/private.rs
+
+/Users/yw/Downloads/ECE1724 Rust/Personal_Finance_Tracker/backend/target/debug/deps/libserde-030b206f931dd9bc.rmeta: /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/yw/Downloads/ECE1724\ Rust/Personal_Finance_Tracker/backend/target/debug/build/serde-1f259c737b352886/out/private.rs
+
+/Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/Users/yw/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/Users/yw/Downloads/ECE1724\ Rust/Personal_Finance_Tracker/backend/target/debug/build/serde-1f259c737b352886/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/yw/Downloads/ECE1724 Rust/Personal_Finance_Tracker/backend/target/debug/build/serde-1f259c737b352886/out
