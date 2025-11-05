@@ -56,6 +56,19 @@ pub async fn register(
         .map_err(|e| AppError::InternalServerError(format!("Failed to create default account: {}", e)))?;
     }
 
+    // Create default categories for the new user
+    let default_categories = ["Salary", "Food", "Rent", "Travel"];
+    for category_name in &default_categories {
+        sqlx::query(
+            "INSERT INTO categories (user_id, name) VALUES ($1, $2)"
+        )
+        .bind(user_id)
+        .bind(*category_name)
+        .execute(&pool)
+        .await
+        .map_err(|e| AppError::InternalServerError(format!("Failed to create default category: {}", e)))?;
+    }
+
     Ok(Json(RegisterResponse {
         message: "User registered successfully".to_string(),
         user_id,
