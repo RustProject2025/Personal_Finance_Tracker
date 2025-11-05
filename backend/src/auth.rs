@@ -44,7 +44,7 @@ pub async fn register(
     })?;
 
     // Create default accounts for the new user
-    let default_accounts = ["Checking", "Savings"];
+    let default_accounts = ["Checking", "Saving"];
     for account_name in &default_accounts {
         sqlx::query(
             "INSERT INTO accounts (user_id, name, type, currency) VALUES ($1, $2, $2, 'USD')"

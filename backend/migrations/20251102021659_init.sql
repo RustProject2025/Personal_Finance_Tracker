@@ -18,7 +18,7 @@ CREATE TABLE sessions (
 );
 
 -- accounts table
--- Note: Default accounts (Checking, Savings) are created automatically on user registration
+-- Note: Default accounts (Checking, Saving) are created automatically on user registration
 -- Users can create additional accounts with custom names via API
 CREATE TABLE accounts (
     id SERIAL PRIMARY KEY,
