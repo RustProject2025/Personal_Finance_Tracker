@@ -105,3 +105,38 @@ pub struct Account {
     pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateCategoryRequest {
+    pub name: String,
+    pub parent_id: Option<i32>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CategoryResponse {
+    pub id: i32,
+    pub name: String,
+    pub parent_id: Option<i32>,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateCategoryResponse {
+    pub message: String,
+    pub category: CategoryResponse,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DeleteCategoryResponse {
+    pub message: String,
+}
+
+#[derive(Debug, FromRow)]
+pub struct Category {
+    pub id: i32,
+    #[allow(dead_code)]
+    pub user_id: i32,
+    pub name: String,
+    pub parent_id: Option<i32>,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+}
+
