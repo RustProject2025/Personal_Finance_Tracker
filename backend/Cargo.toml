@@ -15,5 +15,6 @@ sqlx = { version = "0.8.6", features = ["postgres", "runtime-tokio-rustls", "chr
 tokio = { version = "1.48.0", features = ["full"] }
 tower-http = { version = "0.6.6", features = ["cors"] }
 uuid = { version = "1.10", features = ["v4"] }
-chrono = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
 anyhow = "1.0"
+rust_decimal = { version = "1.36", features = ["serde-with-str"] }
