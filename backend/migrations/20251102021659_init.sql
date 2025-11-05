@@ -17,13 +17,14 @@ CREATE TABLE sessions (
     is_valid BOOLEAN DEFAULT TRUE
 );
 
-CREATE TYPE account_type AS ENUM ('Checking', 'Savings', 'Credit Card', 'Cash');
 -- accounts table
+-- Note: Default accounts (Checking, Saving) are created automatically on user registration
+-- Users can create additional accounts with custom names via API
 CREATE TABLE accounts (
     id SERIAL PRIMARY KEY,
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(50) NOT NULL,
-    type account_type NOT NULL, -- Use ENUM instead of VARCHAR
+    type VARCHAR(50) NOT NULL,
     currency VARCHAR(10) DEFAULT 'USD',
     balance NUMERIC(12,2) DEFAULT 0.0,
     created_at TIMESTAMPTZ DEFAULT NOW()

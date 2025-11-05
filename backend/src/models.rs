@@ -57,3 +57,51 @@ pub struct Session {
     pub is_valid: bool,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateAccountRequest {
+    pub name: String,
+    pub currency: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct AccountResponse {
+    pub id: i32,
+    pub name: String,
+    pub currency: String,
+    pub balance: String,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateAccountResponse {
+    pub message: String,
+    pub account: AccountResponse,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateAccountRequest {
+    pub name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateAccountResponse {
+    pub message: String,
+    pub account: AccountResponse,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DeleteAccountResponse {
+    pub message: String,
+}
+
+#[derive(Debug)]
+pub struct Account {
+    pub id: i32,
+    #[allow(dead_code)]
+    pub user_id: i32,
+    pub name: String,
+    pub currency: String,
+    pub balance: String,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+}
+

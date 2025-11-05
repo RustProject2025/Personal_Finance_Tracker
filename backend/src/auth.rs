@@ -43,6 +43,19 @@ pub async fn register(
         AppError::InternalServerError(format!("Database error: {}", e))
     })?;
 
+    // Create default accounts for the new user
+    let default_accounts = ["Checking", "Saving"];
+    for account_name in &default_accounts {
+        sqlx::query(
+            "INSERT INTO accounts (user_id, name, type, currency) VALUES ($1, $2, $2, 'USD')"
+        )
+        .bind(user_id)
+        .bind(*account_name)
+        .execute(&pool)
+        .await
+        .map_err(|e| AppError::InternalServerError(format!("Failed to create default account: {}", e)))?;
+    }
+
     Ok(Json(RegisterResponse {
         message: "User registered successfully".to_string(),
         user_id,
