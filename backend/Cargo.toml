@@ -1,0 +1,19 @@
+[package]
+name = "backend"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = "0.8.6"
+axum-extra = { version = "0.9", features = ["typed-header"] }
+argon2 = "0.5"
+async-trait = "0.1"
+dotenvy = "0.15.7"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+sqlx = { version = "0.8.6", features = ["postgres", "runtime-tokio-rustls", "chrono"] }
+tokio = { version = "1.48.0", features = ["full"] }
+tower-http = { version = "0.6.6", features = ["cors"] }
+uuid = { version = "1.10", features = ["v4"] }
+chrono = "0.4"
+anyhow = "1.0"
