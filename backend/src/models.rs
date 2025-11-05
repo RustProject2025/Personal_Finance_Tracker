@@ -79,6 +79,17 @@ pub struct CreateAccountResponse {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateAccountRequest {
+    pub name: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateAccountResponse {
+    pub message: String,
+    pub account: AccountResponse,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct DeleteAccountResponse {
     pub message: String,
 }

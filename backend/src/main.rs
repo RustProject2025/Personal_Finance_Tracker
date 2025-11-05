@@ -3,7 +3,7 @@ mod models;
 mod middleware;
 mod accounts;
 
-use axum::{Router, routing::{get, post, delete}, Json};
+use axum::{Router, routing::{get, post, put, delete}, Json};
 use sqlx::postgres::PgPoolOptions;
 use serde::Serialize;
 use std::net::SocketAddr;
@@ -39,6 +39,7 @@ async fn main() -> Result<(), sqlx::Error> {
         .route("/api/auth/logout", post(auth::logout))
         .route("/api/accounts", get(accounts::get_accounts))
         .route("/api/accounts", post(accounts::create_account))
+        .route("/api/accounts/{id}", put(accounts::update_account))
         .route("/api/accounts/{id}", delete(accounts::delete_account))
         .layer(CorsLayer::permissive())
         .with_state(pool);

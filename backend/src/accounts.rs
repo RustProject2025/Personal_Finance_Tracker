@@ -7,6 +7,7 @@ use sqlx::{PgPool, Row};
 
 use crate::models::{
     CreateAccountRequest, CreateAccountResponse, AccountResponse,
+    UpdateAccountRequest, UpdateAccountResponse,
     DeleteAccountResponse, Account,
 };
 use crate::auth::AppError;
@@ -83,6 +84,48 @@ pub async fn get_accounts(
         .collect();
 
     Ok(Json(accounts_response))
+}
+
+pub async fn update_account(
+    State(pool): State<PgPool>,
+    headers: HeaderMap,
+    axum::extract::Path(account_id): axum::extract::Path<i32>,
+    Json(req): Json<UpdateAccountRequest>,
+) -> Result<Json<UpdateAccountResponse>, AppError> {
+    let auth = middleware::verify_auth(&pool, &headers).await?;
+
+    if req.name.is_empty() || req.name.len() > 50 {
+        return Err(AppError::BadRequest("Account name must be between 1 and 50 characters".to_string()));
+    }
+
+    let row = sqlx::query(
+        "UPDATE accounts SET name = $1, type = $1 WHERE id = $2 AND user_id = $3 RETURNING id, user_id, name, currency, balance::text, created_at"
+    )
+    .bind(&req.name)
+    .bind(account_id)
+    .bind(auth.user_id)
+    .fetch_optional(&pool)
+    .await
+    .map_err(|e| AppError::InternalServerError(format!("Database error: {}", e)))?;
+
+    let row = match row {
+        Some(r) => r,
+        None => return Err(AppError::BadRequest("Account not found or you don't have permission to update it".to_string())),
+    };
+
+    let account = Account {
+        id: row.get(0),
+        user_id: row.get(1),
+        name: row.get(2),
+        currency: row.get(3),
+        balance: row.get(4),
+        created_at: row.get(5),
+    };
+
+    Ok(Json(UpdateAccountResponse {
+        message: "Account updated successfully".to_string(),
+        account: account_to_response(account),
+    }))
 }
 
 pub async fn delete_account(
