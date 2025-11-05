@@ -1,8 +1,13 @@
-use axum::{Router, routing::get, Json};
+mod auth;
+mod models;
+mod middleware;
+
+use axum::{Router, routing::{get, post}, Json};
 use sqlx::postgres::PgPoolOptions;
 use serde::Serialize;
 use std::net::SocketAddr;
 use tokio::net::TcpListener;
+use tower_http::cors::CorsLayer;
 
 #[derive(Serialize)]
 struct Health {
@@ -28,6 +33,10 @@ async fn main() -> Result<(), sqlx::Error> {
 
     let app = Router::new()
         .route("/health", get(health_check))
+        .route("/api/auth/register", post(auth::register))
+        .route("/api/auth/login", post(auth::login))
+        .route("/api/auth/logout", post(auth::logout))
+        .layer(CorsLayer::permissive())
         .with_state(pool);
 
     let addr: SocketAddr = "127.0.0.1:3000".parse().unwrap();
