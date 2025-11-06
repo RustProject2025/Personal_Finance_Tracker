@@ -3,6 +3,8 @@ mod models;
 mod middleware;
 mod accounts;
 mod categories;
+mod transactions;
+mod budgets;
 
 use axum::{Router, routing::{get, post, put, delete}, Json};
 use sqlx::postgres::PgPoolOptions;
@@ -45,6 +47,13 @@ async fn main() -> Result<(), sqlx::Error> {
         .route("/api/categories", get(categories::get_categories))
         .route("/api/categories", post(categories::create_category))
         .route("/api/categories/{id}", delete(categories::delete_category))
+        .route("/api/transactions", get(transactions::get_transactions))
+        .route("/api/transactions", post(transactions::create_transaction))
+        .route("/api/transactions/transfer", post(transactions::transfer))
+        .route("/api/budgets", get(budgets::get_budgets))
+        .route("/api/budgets", post(budgets::create_budget))
+        .route("/api/budgets/{id}", put(budgets::update_budget))
+        .route("/api/budgets/{id}", delete(budgets::delete_budget))
         .layer(CorsLayer::permissive())
         .with_state(pool);
 
