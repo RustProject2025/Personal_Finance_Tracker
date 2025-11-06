@@ -140,3 +140,124 @@ pub struct Category {
     pub created_at: chrono::DateTime<chrono::Utc>,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateTransactionRequest {
+    pub account_id: Option<i32>,
+    pub account_name: Option<String>,
+    pub amount: String,
+    pub date: Option<String>,
+    pub category_id: Option<i32>,
+    pub category_name: Option<String>,
+    pub description: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TransactionResponse {
+    pub id: i32,
+    pub account_id: i32,
+    pub account_name: String,
+    pub category_id: Option<i32>,
+    pub category_name: Option<String>,
+    pub amount: String,
+    pub r#type: String,
+    pub date: chrono::NaiveDate,
+    pub description: Option<String>,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateTransactionResponse {
+    pub message: String,
+    pub transaction: TransactionResponse,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TransferRequest {
+    pub from_account_id: i32,
+    pub to_account_id: i32,
+    pub amount: String,
+    pub date: Option<String>,
+    pub description: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TransferResponse {
+    pub message: String,
+    pub from_transaction: TransactionResponse,
+    pub to_transaction: TransactionResponse,
+}
+
+#[derive(Debug)]
+#[allow(dead_code)]
+pub struct Transaction {
+    pub id: i32,
+    pub user_id: i32,
+    pub account_id: i32,
+    pub category_id: Option<i32>,
+    pub amount: String,
+    pub r#type: String,
+    pub date: chrono::NaiveDate,
+    pub description: Option<String>,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateBudgetRequest {
+    pub category_id: Option<i32>,
+    pub amount: String,
+    pub period: Option<String>,
+    pub start_date: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BudgetResponse {
+    pub id: i32,
+    pub category_id: Option<i32>,
+    pub category_name: Option<String>,
+    pub amount: String,
+    pub period: Option<String>,
+    pub start_date: chrono::NaiveDate,
+    pub spent: String,
+    pub remaining: String,
+    pub is_over_budget: bool,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+    pub updated_at: chrono::DateTime<chrono::Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CreateBudgetResponse {
+    pub message: String,
+    pub budget: BudgetResponse,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateBudgetRequest {
+    pub amount: String,
+    pub period: Option<String>,
+    pub start_date: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UpdateBudgetResponse {
+    pub message: String,
+    pub budget: BudgetResponse,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct DeleteBudgetResponse {
+    pub message: String,
+}
+
+#[derive(Debug, FromRow)]
+#[allow(dead_code)]
+pub struct Budget {
+    pub id: i32,
+    pub user_id: i32,
+    pub category_id: Option<i32>,
+    pub amount: String,
+    pub period: Option<String>,
+    pub start_date: chrono::NaiveDate,
+    pub created_at: chrono::DateTime<chrono::Utc>,
+    pub updated_at: chrono::DateTime<chrono::Utc>,
+}
+
