@@ -1,0 +1,531 @@
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: Finance_Tracker
+  contact: {}
+host: example.com
+basePath: /
+securityDefinitions: {}
+schemes:
+- http
+consumes:
+- application/json
+produces:
+- application/json
+paths:
+  /auth/register:
+    post:
+      summary: register
+      tags:
+      - auth
+      operationId: register
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/registerrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /auth/login:
+    post:
+      summary: login
+      tags:
+      - auth
+      operationId: login
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Authorization
+        in: header
+        required: false
+        default: Bearer {token}
+        type: string
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/loginrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+  /auth/logout:
+    post:
+      summary: logout
+      tags:
+      - auth
+      operationId: logout
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/logoutrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+  /accounts:
+    get:
+      summary: retreive accounts
+      tags:
+      - account_management
+      operationId: retreiveaccounts
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+    post:
+      summary: create account
+      tags:
+      - account_management
+      operationId: createaccount
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/createaccountrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+  /accounts/3:
+    put:
+      summary: update account name
+      tags:
+      - account_management
+      operationId: updateaccountname
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/updateaccountnamerequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+    delete:
+      summary: delete
+      tags:
+      - account_management
+      operationId: delete
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/deleterequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+  /transactions/transfer:
+    post:
+      summary: transfer money
+      tags:
+      - transfer between accounts
+      operationId: transfermoney
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/transfermoneyrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+  /categories:
+    get:
+      summary: get user's categories
+      tags:
+      - category_management
+      operationId: getuser'scategories
+      deprecated: false
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+  /categories/1:
+    delete:
+      summary: delete categories
+      tags:
+      - category_management
+      operationId: deletecategories
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/deletecategoriesrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+  /transactions:
+    post:
+      summary: use existing category or account
+      tags:
+      - transaction
+      operationId: useexistingcategoryoraccount
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/useexistingcategoryoraccountrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+  /budgets:
+    post:
+      summary: monthly budgets
+      tags:
+      - budget
+      operationId: monthlybudgets
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/monthlybudgetsrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+  /budgets/2:
+    put:
+      summary: update budget amount
+      tags:
+      - budget
+      operationId: updatebudgetamount
+      deprecated: false
+      produces:
+      - application/json
+      parameters:
+      - name: Body
+        in: body
+        required: true
+        description: ''
+        schema:
+          $ref: '#/definitions/updatebudgetamountrequest'
+      responses:
+        '200':
+          description: ''
+          headers: {}
+      security: []
+definitions:
+  registerrequest:
+    title: registerrequest
+    example:
+      username: user
+      password: user123
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+    required:
+    - username
+    - password
+  loginrequest:
+    title: loginrequest
+    example:
+      username: user
+      password: user123
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+    required:
+    - username
+    - password
+  logoutrequest:
+    title: logoutrequest
+    example:
+      username: user
+      password: user123
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+    required:
+    - username
+    - password
+  createaccountrequest:
+    title: createaccountrequest
+    example:
+      name: Investment
+      currency: CAD
+    type: object
+    properties:
+      name:
+        type: string
+      currency:
+        type: string
+    required:
+    - name
+    - currency
+  updateaccountnamerequest:
+    title: updateaccountnamerequest
+    example:
+      name: NewAccountName
+    type: object
+    properties:
+      name:
+        type: string
+    required:
+    - name
+  deleterequest:
+    title: deleterequest
+    example:
+      name: TestAccount
+      currency: USD
+    type: object
+    properties:
+      name:
+        type: string
+      currency:
+        type: string
+    required:
+    - name
+    - currency
+  transfermoneyrequest:
+    title: transfermoneyrequest
+    example:
+      from_account_id: 1
+      to_account_id: 2
+      amount: '10.00'
+      date: 2024-11-05
+      description: Transfer to Savings
+    type: object
+    properties:
+      from_account_id:
+        type: integer
+        format: int32
+      to_account_id:
+        type: integer
+        format: int32
+      amount:
+        type: string
+      date:
+        type: string
+      description:
+        type: string
+    required:
+    - from_account_id
+    - to_account_id
+    - amount
+    - date
+    - description
+  deletecategoriesrequest:
+    title: deletecategoriesrequest
+    example:
+      name: CADAccount
+      currency: CAD
+    type: object
+    properties:
+      name:
+        type: string
+      currency:
+        type: string
+    required:
+    - name
+    - currency
+  useexistingcategoryoraccountrequest:
+    title: useexistingcategoryoraccountrequest
+    example:
+      account_id: 1
+      amount: '-50.00'
+      date: 2024-11-05
+      category_id: 2
+      description: Lunch at restaurant
+    type: object
+    properties:
+      account_id:
+        type: integer
+        format: int32
+      amount:
+        type: string
+      date:
+        type: string
+      category_id:
+        type: integer
+        format: int32
+      description:
+        type: string
+    required:
+    - account_id
+    - amount
+    - date
+    - category_id
+    - description
+  usenewcategoryoraccountrequest:
+    title: usenewcategoryoraccountrequest
+    example:
+      account_name: Investment Account
+      amount: '1000.00'
+      date: 2024-11-05
+      category_name: Investment
+      description: Initial deposit
+    type: object
+    properties:
+      account_name:
+        type: string
+      amount:
+        type: string
+      date:
+        type: string
+      category_name:
+        type: string
+      description:
+        type: string
+    required:
+    - account_name
+    - amount
+    - date
+    - category_name
+    - description
+  monthlybudgetsrequest:
+    title: monthlybudgetsrequest
+    example:
+      category_id: null
+      amount: '1000.00'
+      period: monthly
+      start_date: 2024-11-01
+    type: object
+    properties:
+      category_id:
+        type: string
+      amount:
+        type: string
+      period:
+        type: string
+      start_date:
+        type: string
+    required:
+    - category_id
+    - amount
+    - period
+    - start_date
+  catoryiesbudgetsrequest:
+    title: catoryiesbudgetsrequest
+    example:
+      category_id: 3
+      amount: '500.00'
+      period: monthly
+      start_date: 2024-11-01
+    type: object
+    properties:
+      category_id:
+        type: integer
+        format: int32
+      amount:
+        type: string
+      period:
+        type: string
+      start_date:
+        type: string
+    required:
+    - category_id
+    - amount
+    - period
+    - start_date
+  updatebudgetamountrequest:
+    title: updatebudgetamountrequest
+    example:
+      amount: '1200.00'
+      period: monthly
+      start_date: 2024-11-01
+    type: object
+    properties:
+      amount:
+        type: string
+      period:
+        type: string
+      start_date:
+        type: string
+    required:
+    - amount
+    - period
+    - start_date
+security: []
+tags:
+- name: auth
+- name: account_management
+- name: transfer between accounts
+- name: category_management
+  description: delete by category id
+- name: transaction
+- name: budget
