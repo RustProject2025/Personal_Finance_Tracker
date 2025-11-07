@@ -1,0 +1,568 @@
+{
+	"info": {
+		"_postman_id": "f318989d-c7b4-42f2-b605-f0c753b0b333",
+		"name": "Finance_Tracker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41343257"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const jsonData = pm.response.json();",
+									"pm.environment.set(\"bearerToken\", jsonData.token)"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "account_management",
+			"item": [
+				{
+					"name": "retreive accounts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/accounts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Investment\",\n  \"currency\": \"CAD\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/accounts",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update account name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"NewAccountName\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/accounts/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"accounts",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"TestAccount\",\n  \"currency\": \"USD\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/accounts/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"accounts",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "transfer between accounts",
+			"item": [
+				{
+					"name": "transfer money",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"from_account_id\": 1,\n  \"to_account_id\": 2,\n  \"amount\": \"10.00\",\n  \"date\": \"2024-11-05\",\n  \"description\": \"Transfer to Savings\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/transactions/transfer",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"transactions",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category_management",
+			"item": [
+				{
+					"name": "get user's categories",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"CADAccount\",\n  \"currency\": \"CAD\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"CADAccount\",\n  \"currency\": \"CAD\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "delete by category id"
+		},
+		{
+			"name": "transaction",
+			"item": [
+				{
+					"name": "use existing category or account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"account_id\": 1,\n  \"amount\": \"-50.00\",\n  \"date\": \"2024-11-05\",\n  \"category_id\": 2,\n  \"description\": \"Lunch at restaurant\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/transactions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "use new category or account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"account_name\": \"Investment Account\",\n  \"amount\": \"1000.00\",\n  \"date\": \"2024-11-05\",\n  \"category_name\": \"Investment\",\n  \"description\": \"Initial deposit\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/transactions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "budget",
+			"item": [
+				{
+					"name": "monthly budgets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"category_id\": null,\n  \"amount\": \"1000.00\",\n  \"period\": \"monthly\",\n  \"start_date\": \"2024-11-01\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/budgets",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"budgets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "catoryies budgets",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"category_id\": 3,\n  \"amount\": \"500.00\",\n  \"period\": \"monthly\",\n  \"start_date\": \"2024-11-01\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/budgets",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"budgets"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update budget amount",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{bearerToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"amount\": \"1200.00\",\n  \"period\": \"monthly\",\n  \"start_date\": \"2024-11-01\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/budgets/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"budgets",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
