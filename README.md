@@ -155,6 +155,8 @@ You do **NOT** need to enter anything manually—just:
 
 ## View API Documentation (OpenAPI)
 
+https://interview-9310.postman.co/workspace/Finance_Tracker~3a938086-f2db-4498-82e3-787d1241b5e4/collection/41343257-f318989d-c7b4-42f2-b605-f0c753b0b333?action=share&creator=41343257&active-environment=41343257-e23b5276-cfcb-4145-baaf-0b80e54ff407
+
 You can also view the API documentation in Swagger:
 
 1. Open: [https://editor.swagger.io/](https://editor.swagger.io/)
