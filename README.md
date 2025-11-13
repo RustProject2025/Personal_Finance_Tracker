@@ -15,6 +15,15 @@
 
 ## Development Guide
 
+docker guide:
+
+to run backend:
+`cd backend`
+
+`docker compose up --build`
+
+control + C to stop
+
 backend and database sucessfully deployed. currently the app is archieved to save cost.
 for future use,
 the cloud API prefix is:
