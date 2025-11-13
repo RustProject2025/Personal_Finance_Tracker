@@ -23,11 +23,14 @@ WORKDIR /app
 COPY --from=builder /usr/local/cargo/bin/sqlx /usr/local/bin/sqlx
 COPY --from=builder /app/target/release/backend /app/backend
 COPY --from=builder /app/migrations ./migrations
+COPY entrypoint.sh /app/entrypoint.sh
+
+RUN chmod +x /app/entrypoint.sh
 
 ENV DATABASE_URL=postgresql://postgres:postgres@db:5432/finance_tracker
 ENV RUST_LOG=info
 
 EXPOSE 3000
 
-CMD ["./backend"]
+CMD ["/app/entrypoint.sh"]
 
