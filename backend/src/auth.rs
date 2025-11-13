@@ -44,7 +44,7 @@ pub async fn register(
     })?;
 
     // Create default accounts for the new user
-    let default_accounts = ["Checking", "Saving"];
+    let default_accounts = ["Checking", "Savings"];
     for account_name in &default_accounts {
         sqlx::query(
             "INSERT INTO accounts (user_id, name, type, currency) VALUES ($1, $2, $2, 'USD')"
@@ -188,7 +188,13 @@ impl IntoResponse for AppError {
             AppError::Unauthorized(msg) => (StatusCode::UNAUTHORIZED, msg),
             AppError::InternalServerError(msg) => {
                 eprintln!("Internal server error: {}", msg);
-                (StatusCode::INTERNAL_SERVER_ERROR, "Internal server error".to_string())
+                let is_dev = std::env::var("RUST_ENV").unwrap_or_default() == "development";
+                let response_msg = if is_dev {
+                    msg
+                } else {
+                    "Internal server error".to_string()
+                };
+                (StatusCode::INTERNAL_SERVER_ERROR, response_msg)
             }
         };
 
