@@ -15,6 +15,20 @@
 
 ## Development Guide
 
+backend and database sucessfully deployed. currently the app is archieved to save cost.
+for future use,
+the cloud API prefix is:
+
+`https://personal-finance-tracker-8mem5.ondigitalocean.app/`
+
+for example, change
+
+`http://localhost:3000/api/auth/register`
+
+to:
+
+`https://personal-finance-tracker-8mem5.ondigitalocean.app/api/auth/login`
+
 ## **Development Guide**
 
 > The following setup has been tested on:
