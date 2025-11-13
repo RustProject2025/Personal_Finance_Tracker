@@ -57,7 +57,7 @@ async fn main() -> Result<(), sqlx::Error> {
         .layer(CorsLayer::permissive())
         .with_state(pool);
 
-    let addr: SocketAddr = "127.0.0.1:3000".parse().unwrap();
+    let addr: SocketAddr = "0.0.0.0:3000".parse().unwrap();
     let listener = TcpListener::bind(addr).await?;
     println!("Server running at http://{addr}");
 
