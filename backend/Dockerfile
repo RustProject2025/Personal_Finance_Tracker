@@ -2,7 +2,7 @@ FROM rust:slim AS builder
 
 WORKDIR /app
 
-RUN cargo install sqlx-cli --no-default-features --features postgres,runtime-tokio-rustls
+RUN cargo install sqlx-cli --no-default-features --features rustls,postgres
 
 COPY Cargo.toml Cargo.lock ./
 COPY src ./src
