@@ -79,7 +79,105 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "login",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/login",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:10:09 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=gPPID5c7opHJPSKzuhqQNw9TeHQ7rodKHizxP7YKkWg-1765390209-1.0.1.1-nG5xpzEc0MthUdlRiI6hXwTv05EbiHPEVcxXc8doXSOScstFjbKYqdnrnMbg4K_OU66LXLDfkirbInqEcpXOLNM1BAC.5fU0z3BzyxRMnms; path=/; expires=Wed, 10-Dec-25 18:40:09 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb28a7cd3a2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Login successful\",\n    \"token\": \"65109916-546c-40d4-a468-f32589ef486b\",\n    \"user_id\": 1\n}"
+						}
+					]
 				},
 				{
 					"name": "logout",
@@ -111,7 +209,96 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "logout",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/auth/logout",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:09:46 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "31"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb1fb39eba2f8-YUL"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=XJ8XUhFQz5WPcJmT010bKkP3yU2hqjHjXbi1zusZ1NI-1765390186-1.0.1.1-rqCu5_wrVwTo1Wu3aQd6HR7OGv3zi.31dvbaJbJrELmOGYhX5bxQGbYjYtvm20WahW3XFEeO1ntgbh6VGFgU1QHLpODm_pprgGpHLXV82Ec; path=/; expires=Wed, 10-Dec-25 18:39:46 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Logout successful\"\n}"
+						}
+					]
 				}
 			]
 		},
@@ -150,7 +337,103 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "retreive accounts",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"user\",\n  \"password\": \"user123\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/accounts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"accounts"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:10:24 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers, Accept-Encoding"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "Last-Modified",
+									"value": "Wed, 10 Dec 2025 18:10:24 GMT"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "MISS"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=RqtI8_Kgg5VqVGh.X2_SDTOSZIXHxrQtlRu8piRlTps-1765390224-1.0.1.1-9hXddSF4AzKKzBMTQGxS01DWRx.Y0CIdU65qhAz31xFY_dFryD9o4Uw_qvNv_xG2qjTIjre1ehbv8LYPi0Ad2joN7sJrPwFhnOpvVxS1I9o; path=/; expires=Wed, 10-Dec-25 18:40:24 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb2e4db9ba2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 2,\n        \"name\": \"Savings\",\n        \"currency\": \"USD\",\n        \"balance\": \"0.00\",\n        \"created_at\": \"2025-11-13T03:08:01.824129Z\"\n    },\n    {\n        \"id\": 1,\n        \"name\": \"Checking\",\n        \"currency\": \"USD\",\n        \"balance\": \"0.00\",\n        \"created_at\": \"2025-11-13T03:08:01.805463Z\"\n    }\n]"
+						}
+					]
 				},
 				{
 					"name": "create account",
@@ -186,7 +469,104 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "create account",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Investment\",\n  \"currency\": \"CAD\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/accounts",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"accounts"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:10:35 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=FjgyKbUwmVHzcglF2fd_w275LlPAHIzfbCkd5SIxcoQ-1765390235-1.0.1.1-NrC9Grc0RaZ6a1d07WqI1Eca3p7EBmJaGT.f.OEAiDG0jRlkvfDhhfzf2otPJGozJU1HW9IA99WbQc_BlNwXnEKwXUm35SkVMYkY6KLfyp4; path=/; expires=Wed, 10-Dec-25 18:40:35 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb32a2822a2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Account created successfully\",\n    \"account\": {\n        \"id\": 3,\n        \"name\": \"Investment\",\n        \"currency\": \"CAD\",\n        \"balance\": \"0.00\",\n        \"created_at\": \"2025-12-10T18:10:35.265066Z\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "update account name",
@@ -223,7 +603,105 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "update account name",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"NewAccountName\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/accounts/3",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"accounts",
+										"3"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:10:42 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers, Accept-Encoding"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "CF-Cache-Status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=j.DZRaN7v.y2_AV7a5z8ZCTmSZjGCcTfT36qI9dgRcQ-1765390242-1.0.1.1-_w3KkLRIXU02u52xghBM0xRYhXbH9VxdHjDx7dcCGjlK.e_EQkxS8rD4B1HdecpW4BAbv7UzmCbvTBM1kp66A3gOGy3neYoU43icyWDcHWo; path=/; expires=Wed, 10-Dec-25 18:40:42 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb3599bbca2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Account updated successfully\",\n    \"account\": {\n        \"id\": 3,\n        \"name\": \"NewAccountName\",\n        \"currency\": \"CAD\",\n        \"balance\": \"0.00\",\n        \"created_at\": \"2025-12-10T18:10:35.265066Z\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "delete",
@@ -297,7 +775,105 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "transfer money",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"from_account_id\": 1,\n  \"to_account_id\": 2,\n  \"amount\": \"10.00\",\n  \"date\": \"2024-11-05\",\n  \"description\": \"Transfer to Savings\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/transactions/transfer",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"transactions",
+										"transfer"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:10:51 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=d..xIA7Dcg_Ou2xJAgg1TgtNjYm0gnB94Ef.GJfOqhY-1765390251-1.0.1.1-LjQPD.y079ReXF7GkgE7YJJ33t_fe05lBZdDEyp3jWaQETvvV07_VYYvv5L5IlTSIAv7DuogVizRKXdxv4Vtpxd6mvoClWBpuHgtwr5j0Ac; path=/; expires=Wed, 10-Dec-25 18:40:51 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb38cc8f0a2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Transfer completed successfully\",\n    \"from_transaction\": {\n        \"id\": 1,\n        \"account_id\": 1,\n        \"account_name\": \"Checking\",\n        \"category_id\": null,\n        \"category_name\": null,\n        \"amount\": \"-10.00\",\n        \"type\": \"transfer\",\n        \"date\": \"2024-11-05\",\n        \"description\": \"Transfer to Savings\",\n        \"created_at\": \"2025-12-10T18:10:51.097443Z\"\n    },\n    \"to_transaction\": {\n        \"id\": 2,\n        \"account_id\": 2,\n        \"account_name\": \"Savings\",\n        \"category_id\": null,\n        \"category_name\": null,\n        \"amount\": \"10.00\",\n        \"type\": \"transfer\",\n        \"date\": \"2024-11-05\",\n        \"description\": \"Transfer to Savings\",\n        \"created_at\": \"2025-12-10T18:10:51.097443Z\"\n    }\n}"
+						}
+					]
 				}
 			]
 		},
@@ -336,7 +912,99 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "get user's categories",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"CADAccount\",\n  \"currency\": \"CAD\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/categories",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"categories"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:10:56 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers, Accept-Encoding"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "MISS"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=B2lt6tvLCV4lWDHxBzQ7S5VI4Xbq3aFo4dnFUU29dkI-1765390256-1.0.1.1-4CiPL9U71mF_H9NsR06CNNx.kFx7_dI0MWODFNg.gfYcho7rrWzAKBDAd2R9yGHBYO6WV49PckT.byhTZ1_b47wJ2vnyyG420Ok96cxadww; path=/; expires=Wed, 10-Dec-25 18:40:56 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb3b02e23a2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 4,\n        \"name\": \"Travel\",\n        \"parent_id\": null,\n        \"created_at\": \"2025-11-13T03:08:01.850308Z\"\n    },\n    {\n        \"id\": 3,\n        \"name\": \"Rent\",\n        \"parent_id\": null,\n        \"created_at\": \"2025-11-13T03:08:01.845730Z\"\n    },\n    {\n        \"id\": 2,\n        \"name\": \"Food\",\n        \"parent_id\": null,\n        \"created_at\": \"2025-11-13T03:08:01.840643Z\"\n    },\n    {\n        \"id\": 1,\n        \"name\": \"Salary\",\n        \"parent_id\": null,\n        \"created_at\": \"2025-11-13T03:08:01.831182Z\"\n    }\n]"
+						}
+					]
 				},
 				{
 					"name": "delete categories",
@@ -410,7 +1078,104 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "use existing category or account",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"account_id\": 1,\n  \"amount\": \"-50.00\",\n  \"date\": \"2024-11-05\",\n  \"category_id\": 2,\n  \"description\": \"Lunch at restaurant\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/transactions",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"transactions"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:11:13 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=wWehEZj12dSgk4edJoyQ9qzBZFZg2d5cdeGb6TJjvfg-1765390273-1.0.1.1-N.3fZSDFS9rnr3nQwhu5zWjkwfoIuK.1CkxxGmXLSTyIOB0ejUGTiZMotiylrDORjcwTx3dc9eAg87uBfYFEJebsfU7yHuBNmqGgbL3atAs; path=/; expires=Wed, 10-Dec-25 18:41:13 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb417598ea2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Transaction created successfully\",\n    \"transaction\": {\n        \"id\": 3,\n        \"account_id\": 1,\n        \"account_name\": \"Checking\",\n        \"category_id\": 2,\n        \"category_name\": \"Food\",\n        \"amount\": \"-50.00\",\n        \"type\": \"expense\",\n        \"date\": \"2024-11-05\",\n        \"description\": \"Lunch at restaurant\",\n        \"created_at\": \"2025-12-10T18:11:13.237435Z\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "use new category or account",
@@ -446,7 +1211,104 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "use new category or account",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"account_name\": \"Investment Account\",\n  \"amount\": \"1000.00\",\n  \"date\": \"2024-11-05\",\n  \"category_name\": \"Investment\",\n  \"description\": \"Initial deposit\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/transactions",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"transactions"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:11:17 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=ZbzsRwpfMyR8ztqPQ6o8gWwM2.gDwIGYELmwFdIz0wk-1765390277-1.0.1.1-Hv.h8Yrq0VDiPTOAUDBo.TDt0Osew2nK6Em4jiPyBKNPZGGPP69dvRaoDdpjuvrDVhDdhIlClYDbz0qAEJ7RckxtsIpEIKIi8WWqq0goAlQ; path=/; expires=Wed, 10-Dec-25 18:41:17 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb4301f1da2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Transaction created successfully\",\n    \"transaction\": {\n        \"id\": 4,\n        \"account_id\": 4,\n        \"account_name\": \"Investment Account\",\n        \"category_id\": 5,\n        \"category_name\": \"Investment\",\n        \"amount\": \"1000.00\",\n        \"type\": \"income\",\n        \"date\": \"2024-11-05\",\n        \"description\": \"Initial deposit\",\n        \"created_at\": \"2025-12-10T18:11:17.197499Z\"\n    }\n}"
+						}
+					]
 				}
 			]
 		},
@@ -487,7 +1349,104 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "monthly budgets",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"category_id\": null,\n  \"amount\": \"1000.00\",\n  \"period\": \"monthly\",\n  \"start_date\": \"2024-11-01\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/budgets",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"budgets"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:11:43 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=sWaVfKqI.3hLoof.hkfeiTxp8ICpoLu3uTmiypuLOew-1765390303-1.0.1.1-Mld0TLwgjaXHYu0XRbygRrOL6PscyOFR2klCRyi0T7xlcDbqLmfX4d8WYBKgooZ66EVSSiVFfiLy9Iey18025zaOY6mAQmdFKqFyXqZu_H0; path=/; expires=Wed, 10-Dec-25 18:41:43 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb4d5fcc5a2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Budget created successfully\",\n    \"budget\": {\n        \"id\": 1,\n        \"category_id\": null,\n        \"category_name\": null,\n        \"amount\": \"1000.00\",\n        \"period\": \"monthly\",\n        \"start_date\": \"2024-11-01\",\n        \"spent\": \"0\",\n        \"remaining\": \"1000.00\",\n        \"is_over_budget\": false,\n        \"created_at\": \"2025-12-10T18:11:43.726915Z\",\n        \"updated_at\": \"2025-12-10T18:11:43.726915Z\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "catoryies budgets",
@@ -523,7 +1482,104 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "catoryies budgets",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"category_id\": 3,\n  \"amount\": \"500.00\",\n  \"period\": \"monthly\",\n  \"start_date\": \"2024-11-01\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/budgets",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"budgets"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:11:50 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=EkEHf_5B4rSpmzt3wGTswti8RhyMM4UZDwxb6Ka5wl8-1765390310-1.0.1.1-6pzeECGnGiywpBSv.mQRShjTy9rZ7ZXldj8lP4GMIrSXJvdfE6u5I8cXHTi0LemqU7oiO1B8aMLF9FBWGMIY0_S8toOqyrKys4IRK8YMTw8; path=/; expires=Wed, 10-Dec-25 18:41:50 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb501898fa2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Budget created successfully\",\n    \"budget\": {\n        \"id\": 2,\n        \"category_id\": 3,\n        \"category_name\": \"Rent\",\n        \"amount\": \"500.00\",\n        \"period\": \"monthly\",\n        \"start_date\": \"2024-11-01\",\n        \"spent\": \"0\",\n        \"remaining\": \"500.00\",\n        \"is_over_budget\": false,\n        \"created_at\": \"2025-12-10T18:11:50.681295Z\",\n        \"updated_at\": \"2025-12-10T18:11:50.681295Z\"\n    }\n}"
+						}
+					]
 				},
 				{
 					"name": "update budget amount",
@@ -560,7 +1616,105 @@
 							]
 						}
 					},
-					"response": []
+					"response": [
+						{
+							"name": "update budget amount",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"amount\": \"1200.00\",\n  \"period\": \"monthly\",\n  \"start_date\": \"2024-11-01\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/budgets/2",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"budgets",
+										"2"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "",
+							"header": [
+								{
+									"key": "Date",
+									"value": "Wed, 10 Dec 2025 18:11:58 GMT"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Content-Encoding",
+									"value": "br"
+								},
+								{
+									"key": "vary",
+									"value": "origin, access-control-request-method, access-control-request-headers, Accept-Encoding"
+								},
+								{
+									"key": "access-control-allow-origin",
+									"value": "*"
+								},
+								{
+									"key": "access-control-expose-headers",
+									"value": "*"
+								},
+								{
+									"key": "x-do-app-origin",
+									"value": "90efb99f-623c-4309-bf02-4eec52baf789"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "private"
+								},
+								{
+									"key": "x-do-orig-status",
+									"value": "200"
+								},
+								{
+									"key": "cf-cache-status",
+									"value": "DYNAMIC"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "__cf_bm=aTaduKWWQB4yz2Tk.4Wh_5PrcoZ9XlvXQ5G2KDdLdhM-1765390318-1.0.1.1-DEC.vLEjxQsylhkT0DZ9jHXtQMyGRKPBBIUqrbJD5mMOkZkgelMvRiydmBNXp2axNCllo0SeSC2Oq4fvA7nFYsaIxaKa0.Ik2MI8tRBo4Wo; path=/; expires=Wed, 10-Dec-25 18:41:58 GMT; domain=.ondigitalocean.app; HttpOnly; Secure; SameSite=None"
+								},
+								{
+									"key": "Server",
+									"value": "cloudflare"
+								},
+								{
+									"key": "CF-RAY",
+									"value": "9abeb52f6999a2f8-YUL"
+								},
+								{
+									"key": "alt-svc",
+									"value": "h3=\":443\"; ma=86400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"Budget updated successfully\",\n    \"budget\": {\n        \"id\": 2,\n        \"category_id\": 3,\n        \"category_name\": \"Rent\",\n        \"amount\": \"1200.00\",\n        \"period\": \"monthly\",\n        \"start_date\": \"2024-11-01\",\n        \"spent\": \"0\",\n        \"remaining\": \"1200.00\",\n        \"is_over_budget\": false,\n        \"created_at\": \"2025-12-10T18:11:50.681295Z\",\n        \"updated_at\": \"2025-12-10T18:11:58.050131Z\"\n    }\n}"
+						}
+					]
 				}
 			]
 		}
