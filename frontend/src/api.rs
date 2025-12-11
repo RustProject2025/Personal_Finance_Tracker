@@ -19,6 +19,7 @@ impl ApiClient {
         }
     }
 
+ 
     pub async fn register(&self, req: RegisterRequest) -> Result<String> {
         let resp = self.client.post(format!("{}/auth/register", BASE_URL))
             .json(&req)
@@ -49,6 +50,7 @@ impl ApiClient {
         }
     }
 
+ 
     async fn get_auth<T: serde::de::DeserializeOwned>(&self, endpoint: &str) -> Result<T> {
         if let Some(token) = &self.token {
             let resp = self.client.get(format!("{}{}", BASE_URL, endpoint))
@@ -66,7 +68,6 @@ impl ApiClient {
             Err(anyhow!("Not authenticated"))
         }
     }
-
 
     async fn post_auth<T: serde::Serialize>(&self, endpoint: &str, body: &T) -> Result<()> {
         if let Some(token) = &self.token {
@@ -87,23 +88,29 @@ impl ApiClient {
         }
     }
 
+  
     pub async fn get_accounts(&self) -> Result<Vec<AccountResponse>> {
         self.get_auth("/accounts").await
     }
 
-    pub async fn get_transactions(&self) -> Result<Vec<TransactionResponse>> {
-        self.get_auth("/transactions").await
+    pub async fn get_transactions(&self, account_id: Option<i32>) -> Result<Vec<TransactionResponse>> {
+        let url = if let Some(id) = account_id {
+            format!("/transactions?account_id={}", id)
+        } else {
+            "/transactions".to_string()
+        };
+        self.get_auth(&url).await
     }
 
     pub async fn get_budgets(&self) -> Result<Vec<BudgetResponse>> {
         self.get_auth("/budgets").await
     }
     
-
     pub async fn get_categories(&self) -> Result<Vec<CategoryResponse>> {
         self.get_auth("/categories").await
     }
 
+   
     pub async fn create_account(&self, req: CreateAccountRequest) -> Result<()> {
         self.post_auth("/accounts", &req).await
     }

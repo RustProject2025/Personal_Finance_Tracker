@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct LoginRequest {
     pub username: String,
@@ -22,7 +21,6 @@ pub struct RegisterResponse {
     pub user_id: i32,
 }
 
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AccountResponse {
     pub id: i32,
@@ -31,12 +29,12 @@ pub struct AccountResponse {
     pub balance: String,
 }
 
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CreateAccountRequest {
     pub name: String,
     pub currency: Option<String>,
 }
+
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TransactionResponse {
@@ -49,18 +47,16 @@ pub struct TransactionResponse {
     pub description: Option<String>,
 }
 
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CreateTransactionRequest {
-    pub account_id: Option<i32>,
+    pub account_id: Option<i32>,   
     pub account_name: Option<String>, 
-    pub category_id: Option<i32>,
+    pub category_id: Option<i32>,  
     pub amount: String,
-    pub r#type: String, // "income" 或 "expense"
+    pub r#type: String,
     pub date: String,   
     pub description: Option<String>,
 }
-
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TransferRequest {
@@ -78,12 +74,12 @@ pub struct CategoryResponse {
     pub name: String,
 }
 
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CreateCategoryRequest {
     pub name: String,
     pub parent_id: Option<i32>,
 }
+
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BudgetResponse {
@@ -95,7 +91,6 @@ pub struct BudgetResponse {
     pub is_over_budget: bool,
     pub period: Option<String>,
 }
-
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CreateBudgetRequest {
