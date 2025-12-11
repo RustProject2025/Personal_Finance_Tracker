@@ -130,6 +130,16 @@ psql -U <username> -d finance_db -f migrations/20251102021659_init.sql
 ## **4. Start the Server**
 
 ```bash
+#Backend runing the backend In the Docker environment
+cargo run
+```
+```bash
+
+#Before running the frontend, you can inject some sample data
+python inject_data.py
+
+#frontend runing in the terminal window
+cd frontend
 cargo run
 ```
 
