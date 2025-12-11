@@ -20,3 +20,25 @@ pub struct AccountResponse {
     pub currency: String,
     pub balance: String,
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct TransactionResponse {
+    pub id: i32,
+    pub account_name: String,
+    pub category_name: Option<String>,
+    pub amount: String,
+    pub r#type: String, // 'income', 'expense', 'transfer'
+    pub date: String,
+    pub description: Option<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct BudgetResponse {
+    pub id: i32,
+    pub category_name: Option<String>,
+    pub amount: String,     // 预算总额
+    pub spent: String,      // 已用
+    pub remaining: String,  // 剩余
+    pub is_over_budget: bool,
+    pub period: Option<String>,
+}
