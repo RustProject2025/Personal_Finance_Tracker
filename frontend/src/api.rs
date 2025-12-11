@@ -1,6 +1,7 @@
 use reqwest::{Client, StatusCode};
-use crate::models::{LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, AccountResponse, TransactionResponse, BudgetResponse}; // 引入 Register 相关
+use crate::models::*;
 use anyhow::{Result, anyhow};
+
 
 const BASE_URL: &str = "http://localhost:3000/api";
 
@@ -18,7 +19,6 @@ impl ApiClient {
         }
     }
 
-    // 新增注册方法
     pub async fn register(&self, req: RegisterRequest) -> Result<String> {
         let resp = self.client.post(format!("{}/auth/register", BASE_URL))
             .json(&req)
@@ -29,7 +29,6 @@ impl ApiClient {
             let data: RegisterResponse = resp.json().await?;
             Ok(data.message)
         } else {
-            // 尝试读取错误信息
             let err_text = resp.text().await.unwrap_or_else(|_| "Unknown error".to_string());
             Err(anyhow!("Registration failed: {}", err_text))
         }
@@ -50,14 +49,14 @@ impl ApiClient {
         }
     }
 
-    async fn get_authenticated<T: serde::de::DeserializeOwned>(&self, endpoint: &str) -> Result<T> {
+    async fn get_auth<T: serde::de::DeserializeOwned>(&self, endpoint: &str) -> Result<T> {
         if let Some(token) = &self.token {
             let resp = self.client.get(format!("{}{}", BASE_URL, endpoint))
                 .bearer_auth(token)
                 .send()
                 .await?;
             
-            if resp.status() == StatusCode::OK {
+            if resp.status().is_success() {
                 let data: T = resp.json().await?;
                 Ok(data)
             } else {
@@ -68,15 +67,60 @@ impl ApiClient {
         }
     }
 
+
+    async fn post_auth<T: serde::Serialize>(&self, endpoint: &str, body: &T) -> Result<()> {
+        if let Some(token) = &self.token {
+            let resp = self.client.post(format!("{}{}", BASE_URL, endpoint))
+                .bearer_auth(token)
+                .json(body)
+                .send()
+                .await?;
+            
+            if resp.status().is_success() {
+                Ok(())
+            } else {
+                let err_text = resp.text().await.unwrap_or_default();
+                Err(anyhow!("Action failed: {}", err_text))
+            }
+        } else {
+            Err(anyhow!("Not authenticated"))
+        }
+    }
+
     pub async fn get_accounts(&self) -> Result<Vec<AccountResponse>> {
-        self.get_authenticated("/accounts").await
+        self.get_auth("/accounts").await
     }
 
     pub async fn get_transactions(&self) -> Result<Vec<TransactionResponse>> {
-        self.get_authenticated("/transactions").await
+        self.get_auth("/transactions").await
     }
 
     pub async fn get_budgets(&self) -> Result<Vec<BudgetResponse>> {
-        self.get_authenticated("/budgets").await
+        self.get_auth("/budgets").await
+    }
+    
+
+    pub async fn get_categories(&self) -> Result<Vec<CategoryResponse>> {
+        self.get_auth("/categories").await
+    }
+
+    pub async fn create_account(&self, req: CreateAccountRequest) -> Result<()> {
+        self.post_auth("/accounts", &req).await
+    }
+
+    pub async fn create_transaction(&self, req: CreateTransactionRequest) -> Result<()> {
+        self.post_auth("/transactions", &req).await
+    }
+
+    pub async fn transfer(&self, req: TransferRequest) -> Result<()> {
+        self.post_auth("/transactions/transfer", &req).await
+    }
+
+    pub async fn create_category(&self, req: CreateCategoryRequest) -> Result<()> {
+        self.post_auth("/categories", &req).await
+    }
+
+    pub async fn create_budget(&self, req: CreateBudgetRequest) -> Result<()> {
+        self.post_auth("/budgets", &req).await
     }
 }
