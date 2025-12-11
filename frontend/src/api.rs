@@ -2,7 +2,8 @@ use reqwest::{Client, StatusCode};
 use crate::models::*;
 use anyhow::{Result, anyhow};
 
-const BASE_URL: &str = "http://localhost:3000/api";
+const DEPLOYED_URL: &str = "https://personal-finance-tracker-8mem5.ondigitalocean.app/api";
+const LOCAL_URL: &str = "http://localhost:3000/api";
 
 #[derive(Clone)]
 pub struct ApiClient {
@@ -18,12 +19,18 @@ impl ApiClient {
         }
     }
 
-  
     pub async fn register(&self, req: RegisterRequest) -> Result<String> {
-        let resp = self.client.post(format!("{}/auth/register", BASE_URL))
+        let resp = match self.client.post(format!("{}/auth/register", DEPLOYED_URL))
             .json(&req)
             .send()
-            .await?;
+            .await
+        {
+            Ok(r) => r,
+            Err(_) => self.client.post(format!("{}/auth/register", LOCAL_URL))
+                .json(&req)
+                .send()
+                .await?,
+        };
 
         if resp.status() == StatusCode::OK {
             let data: RegisterResponse = resp.json().await?;
@@ -35,10 +42,17 @@ impl ApiClient {
     }
 
     pub async fn login(&mut self, req: LoginRequest) -> Result<()> {
-        let resp = self.client.post(format!("{}/auth/login", BASE_URL))
+        let resp = match self.client.post(format!("{}/auth/login", DEPLOYED_URL))
             .json(&req)
             .send()
-            .await?;
+            .await
+        {
+            Ok(r) => r,
+            Err(_) => self.client.post(format!("{}/auth/login", LOCAL_URL))
+                .json(&req)
+                .send()
+                .await?,
+        };
 
         if resp.status() == StatusCode::OK {
             let data: LoginResponse = resp.json().await?;
@@ -49,13 +63,19 @@ impl ApiClient {
         }
     }
 
- 
     async fn get_auth<T: serde::de::DeserializeOwned>(&self, endpoint: &str) -> Result<T> {
         if let Some(token) = &self.token {
-            let resp = self.client.get(format!("{}{}", BASE_URL, endpoint))
+            let resp = match self.client.get(format!("{}{}", DEPLOYED_URL, endpoint))
                 .bearer_auth(token)
                 .send()
-                .await?;
+                .await
+            {
+                Ok(r) => r,
+                Err(_) => self.client.get(format!("{}{}", LOCAL_URL, endpoint))
+                    .bearer_auth(token)
+                    .send()
+                    .await?,
+            };
             
             if resp.status().is_success() {
                 let data: T = resp.json().await?;
@@ -70,11 +90,19 @@ impl ApiClient {
 
     async fn post_auth<T: serde::Serialize>(&self, endpoint: &str, body: &T) -> Result<()> {
         if let Some(token) = &self.token {
-            let resp = self.client.post(format!("{}{}", BASE_URL, endpoint))
+            let resp = match self.client.post(format!("{}{}", DEPLOYED_URL, endpoint))
                 .bearer_auth(token)
                 .json(body)
                 .send()
-                .await?;
+                .await
+            {
+                Ok(r) => r,
+                Err(_) => self.client.post(format!("{}{}", LOCAL_URL, endpoint))
+                    .bearer_auth(token)
+                    .json(body)
+                    .send()
+                    .await?,
+            };
             
             if resp.status().is_success() {
                 Ok(())
@@ -89,10 +117,17 @@ impl ApiClient {
 
     async fn delete_auth(&self, endpoint: &str) -> Result<()> {
         if let Some(token) = &self.token {
-            let resp = self.client.delete(format!("{}{}", BASE_URL, endpoint))
+            let resp = match self.client.delete(format!("{}{}", DEPLOYED_URL, endpoint))
                 .bearer_auth(token)
                 .send()
-                .await?;
+                .await
+            {
+                Ok(r) => r,
+                Err(_) => self.client.delete(format!("{}{}", LOCAL_URL, endpoint))
+                    .bearer_auth(token)
+                    .send()
+                    .await?,
+            };
             
             if resp.status().is_success() {
                 Ok(())
@@ -105,7 +140,6 @@ impl ApiClient {
         }
     }
 
-    
     pub async fn get_accounts(&self) -> Result<Vec<AccountResponse>> {
         self.get_auth("/accounts").await
     }
@@ -127,7 +161,6 @@ impl ApiClient {
         self.get_auth("/categories").await
     }
 
-   
     pub async fn create_account(&self, req: CreateAccountRequest) -> Result<()> {
         self.post_auth("/accounts", &req).await
     }
@@ -148,17 +181,14 @@ impl ApiClient {
         self.post_auth("/budgets", &req).await
     }
 
-    
     pub async fn delete_account(&self, id: i32) -> Result<()> {
         self.delete_auth(&format!("/accounts/{}", id)).await
     }
 
-  
     pub async fn delete_category(&self, id: i32) -> Result<()> {
         self.delete_auth(&format!("/categories/{}", id)).await
     }
 
-   
     pub async fn delete_budget(&self, id: i32) -> Result<()> {
         self.delete_auth(&format!("/budgets/{}", id)).await
     }

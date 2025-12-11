@@ -30,7 +30,7 @@ enum PopupType {
     AddAccount { step: usize, name: String, currency: String },
     AddTransaction { step: usize, amount: String, desc: String, category_input: String }, 
     Transfer { step: usize, from_id: String, to_id: String, amount: String },
-    AddCategory { step: usize, name: String },
+    AddCategory { name: String },
     AddBudget { step: usize, amount: String, category_id: String },
     
  
@@ -244,7 +244,11 @@ impl App {
             let result = match popup {
                 PopupType::AddAccount { name, currency, .. } => {
                     let name_trim = name.trim();
-                    if self.accounts.iter().any(|a| a.name.eq_ignore_ascii_case(name_trim)) {
+                    if name_trim.is_empty() {
+                        Err(anyhow::anyhow!("Account name cannot be empty!"))
+                    } else if name_trim.len() > 50 {
+                        Err(anyhow::anyhow!("Account name must be 50 characters or less!"))
+                    } else if self.accounts.iter().any(|a| a.name.eq_ignore_ascii_case(name_trim)) {
                         Err(anyhow::anyhow!("Account '{}' already exists!", name_trim))
                     } else {
                         self.api.create_account(CreateAccountRequest { name: name_trim.to_string(), currency: Some(currency.clone()) }).await
@@ -255,41 +259,141 @@ impl App {
                     if acc_id.is_none() {
                         Err(anyhow::anyhow!("Select an account first!"))
                     } else {
-                        let input_trim = category_input.trim();
-                        let mut final_cat_id = None;
-                        if !input_trim.is_empty() {
-                            if let Some((id, _)) = self.resolve_category(input_trim) {
-                                final_cat_id = Some(id);
+                        let amount_trim = amount.trim();
+                        if amount_trim.is_empty() {
+                            Err(anyhow::anyhow!("Amount cannot be empty!"))
+                        } else {
+                            let amount_val = match amount_trim.parse::<f64>() {
+                                Ok(v) => v,
+                                Err(_) => {
+                                    self.message = Some(("Invalid amount format! Use numbers only.".to_string(), Color::Red));
+                                    return;
+                                }
+                            };
+                            if amount_val == 0.0 {
+                                self.message = Some(("Amount cannot be zero!".to_string(), Color::Red));
+                                return;
                             } else {
-                                return { self.message = Some((format!("Invalid Category: '{}'", input_trim), Color::Red)); return; };
+                                let input_trim = category_input.trim();
+                                let mut final_cat_id = None;
+                                if !input_trim.is_empty() {
+                                    if let Some((id, _)) = self.resolve_category(input_trim) {
+                                        final_cat_id = Some(id);
+                                    } else {
+                                        self.message = Some((format!("Invalid Category: '{}'", input_trim), Color::Red));
+                                        return;
+                                    }
+                                }
+                                self.api.create_transaction(CreateTransactionRequest {
+                                    account_id: acc_id,
+                                    account_name: None, category_id: final_cat_id,
+                                    amount: amount_trim.to_string(),
+                                    r#type: if amount_val >= 0.0 { "income".to_string() } else { "expense".to_string() },
+                                    date: chrono::Local::now().format("%Y-%m-%d").to_string(),
+                                    description: Some(desc.clone()),
+                                }).await
                             }
                         }
-                        let amount_val = amount.parse::<f64>().unwrap_or(0.0);
-                        self.api.create_transaction(CreateTransactionRequest {
-                            account_id: acc_id,
-                            account_name: None, category_id: final_cat_id,
-                            amount: amount.clone(),
-                            r#type: if amount_val >= 0.0 { "income".to_string() } else { "expense".to_string() },
-                            date: chrono::Local::now().format("%Y-%m-%d").to_string(),
-                            description: Some(desc.clone()),
-                        }).await
                     }
                 },
                 PopupType::Transfer { from_id, to_id, amount, .. } => {
-                    let f = from_id.parse().unwrap_or(0); let t = to_id.parse().unwrap_or(0);
-                    self.api.transfer(TransferRequest { from_account_id: f, to_account_id: t, amount: amount.clone(), date: None, description: Some("TUI Transfer".to_string()) }).await
+                    let from_id_trim = from_id.trim();
+                    let to_id_trim = to_id.trim();
+                    let amount_trim = amount.trim();
+                    
+                    if from_id_trim.is_empty() {
+                        Err(anyhow::anyhow!("From account ID cannot be empty!"))
+                    } else if to_id_trim.is_empty() {
+                        Err(anyhow::anyhow!("To account ID cannot be empty!"))
+                    } else if amount_trim.is_empty() {
+                        Err(anyhow::anyhow!("Amount cannot be empty!"))
+                    } else {
+                        let f = match from_id_trim.parse::<i32>() {
+                            Ok(id) => id,
+                            Err(_) => {
+                                self.message = Some(("Invalid from account ID! Use numbers only.".to_string(), Color::Red));
+                                return;
+                            }
+                        };
+                        let t = match to_id_trim.parse::<i32>() {
+                            Ok(id) => id,
+                            Err(_) => {
+                                self.message = Some(("Invalid to account ID! Use numbers only.".to_string(), Color::Red));
+                                return;
+                            }
+                        };
+                        
+                        if f == t {
+                            Err(anyhow::anyhow!("Cannot transfer to the same account!"))
+                        } else if !self.accounts.iter().any(|a| a.id == f) {
+                            Err(anyhow::anyhow!("From account #{} not found!", f))
+                        } else if !self.accounts.iter().any(|a| a.id == t) {
+                            Err(anyhow::anyhow!("To account #{} not found!", t))
+                        } else {
+                            let amount_val = match amount_trim.parse::<f64>() {
+                                Ok(v) => v,
+                                Err(_) => {
+                                    self.message = Some(("Invalid amount format! Use numbers only.".to_string(), Color::Red));
+                                    return;
+                                }
+                            };
+                            if amount_val <= 0.0 {
+                                self.message = Some(("Transfer amount must be positive!".to_string(), Color::Red));
+                                return;
+                            } else {
+                                self.api.transfer(TransferRequest { from_account_id: f, to_account_id: t, amount: amount_trim.to_string(), date: None, description: Some("TUI Transfer".to_string()) }).await
+                            }
+                        }
+                    }
                 },
                 PopupType::AddCategory { name, .. } => {
                     let name_trim = name.trim();
-                    if self.categories.iter().any(|c| c.name.eq_ignore_ascii_case(name_trim)) {
-                        Err(anyhow::anyhow!("Category exists!"))
+                    if name_trim.is_empty() {
+                        Err(anyhow::anyhow!("Category name cannot be empty!"))
+                    } else if name_trim.len() > 50 {
+                        Err(anyhow::anyhow!("Category name must be 50 characters or less!"))
+                    } else if self.categories.iter().any(|c| c.name.eq_ignore_ascii_case(name_trim)) {
+                        Err(anyhow::anyhow!("Category '{}' already exists!", name_trim))
                     } else {
                         self.api.create_category(CreateCategoryRequest { name: name_trim.to_string(), parent_id: None }).await
                     }
                 },
                 PopupType::AddBudget { amount, category_id, .. } => {
-                    let cat_id = if category_id.trim().is_empty() { None } else { Some(category_id.parse().unwrap_or(0)) };
-                    self.api.create_budget(CreateBudgetRequest { category_id: cat_id, amount: amount.clone(), period: Some("monthly".to_string()), start_date: None }).await
+                    let amount_trim = amount.trim();
+                    if amount_trim.is_empty() {
+                        Err(anyhow::anyhow!("Budget amount cannot be empty!"))
+                    } else {
+                        let amount_val = match amount_trim.parse::<f64>() {
+                            Ok(v) => v,
+                            Err(_) => {
+                                self.message = Some(("Invalid amount format! Use numbers only.".to_string(), Color::Red));
+                                return;
+                            }
+                        };
+                        if amount_val <= 0.0 {
+                            self.message = Some(("Budget amount must be positive!".to_string(), Color::Red));
+                            return;
+                        } else {
+                            let cat_id = if category_id.trim().is_empty() { 
+                                None 
+                            } else { 
+                                let parsed_id = match category_id.trim().parse::<i32>() {
+                                    Ok(id) => id,
+                                    Err(_) => {
+                                        self.message = Some(("Invalid category ID! Use numbers only.".to_string(), Color::Red));
+                                        return;
+                                    }
+                                };
+                                if !self.categories.iter().any(|c| c.id == parsed_id) {
+                                    self.message = Some((format!("Category #{} not found!", parsed_id), Color::Red));
+                                    return;
+                                } else {
+                                    Some(parsed_id)
+                                }
+                            };
+                            self.api.create_budget(CreateBudgetRequest { category_id: cat_id, amount: amount_trim.to_string(), period: Some("monthly".to_string()), start_date: None }).await
+                        }
+                    }
                 },
                 
               
@@ -397,14 +501,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             },
 
                            
-                            KeyCode::Char('a') => app.state = AppState::InputPopup(PopupType::AddAccount { step: 0, name: String::new(), currency: "USD".to_string() }),
-                            KeyCode::Char('t') => {
-                                if app.accounts.is_empty() { app.message = Some(("Create an account first!".to_string(), Color::Red)); }
-                                else { app.state = AppState::InputPopup(PopupType::AddTransaction { step: 0, amount: String::new(), desc: String::new(), category_input: String::new() }); }
+                            KeyCode::Char('a') => {
+                                app.message = None;
+                                app.state = AppState::InputPopup(PopupType::AddAccount { step: 0, name: String::new(), currency: "USD".to_string() });
                             },
-                            KeyCode::Char('x') => app.state = AppState::InputPopup(PopupType::Transfer { step: 0, from_id: String::new(), to_id: String::new(), amount: String::new() }),
-                            KeyCode::Char('c') => app.state = AppState::InputPopup(PopupType::AddCategory { step: 0, name: String::new() }),
-                            KeyCode::Char('b') => app.state = AppState::InputPopup(PopupType::AddBudget { step: 0, amount: String::new(), category_id: String::new() }),
+                            KeyCode::Char('t') => {
+                                if app.accounts.is_empty() { 
+                                    app.message = Some(("Create an account first!".to_string(), Color::Red)); 
+                                } else { 
+                                    app.message = None;
+                                    app.state = AppState::InputPopup(PopupType::AddTransaction { step: 0, amount: String::new(), desc: String::new(), category_input: String::new() }); 
+                                }
+                            },
+                            KeyCode::Char('x') => {
+                                app.message = None;
+                                app.state = AppState::InputPopup(PopupType::Transfer { step: 0, from_id: String::new(), to_id: String::new(), amount: String::new() });
+                            },
+                            KeyCode::Char('c') => {
+                                app.message = None;
+                                app.state = AppState::InputPopup(PopupType::AddCategory { name: String::new() });
+                            },
+                            KeyCode::Char('b') => {
+                                app.message = None;
+                                app.state = AppState::InputPopup(PopupType::AddBudget { step: 0, amount: String::new(), category_id: String::new() });
+                            },
                             
                             
                             KeyCode::Char('d') => app.init_delete(),
@@ -508,7 +628,7 @@ fn render_dashboard(f: &mut Frame, app: &App, area: Rect) {
 
     
     let account_items: Vec<ListItem> = app.accounts.iter().map(|acc| {
-        let content = format!("[#{}] {} : {}", acc.id, acc.name, acc.balance);
+        let content = format!("[#{}] {}", acc.id, acc.name);
         ListItem::new(content).style(Style::default().fg(Color::Cyan))
     }).collect();
     let accounts_list = List::new(account_items)
@@ -517,7 +637,11 @@ fn render_dashboard(f: &mut Frame, app: &App, area: Rect) {
     f.render_stateful_widget(accounts_list, main_chunks[0], &mut app.account_list_state.clone());
 
    
-    let tx_title = if let Some(acc) = app.get_selected_account() { format!("Transactions (Account #{})", acc.id) } else { "Transactions (All)".to_string() };
+    let tx_title = if let Some(acc) = app.get_selected_account() { 
+        format!("Transactions (Account #{} | Balance: {} {})", acc.id, acc.balance, acc.currency) 
+    } else { 
+        "Transactions (All)".to_string() 
+    };
     let header_cells = ["Date", "Desc", "Cat", "Amt"].iter().map(|h| Cell::from(*h).style(Style::default().fg(Color::Yellow)));
     let header = Row::new(header_cells).height(1).bottom_margin(1);
     let rows = app.transactions.iter().map(|t| {
@@ -525,7 +649,12 @@ fn render_dashboard(f: &mut Frame, app: &App, area: Rect) {
         let cells = vec![Cell::from(t.date.clone()), Cell::from(t.description.clone().unwrap_or_default()), Cell::from(t.category_name.clone().unwrap_or_default()), Cell::from(t.amount.clone()).style(amount_style)];
         Row::new(cells).height(1)
     });
-    f.render_widget(Table::new(rows, [Constraint::Length(10), Constraint::Percentage(40), Constraint::Percentage(20), Constraint::Length(10)]).header(header).block(Block::default().borders(Borders::ALL).title(tx_title)), main_chunks[1]);
+    f.render_widget(Table::new(rows, [
+        Constraint::Min(10),
+        Constraint::Percentage(40),
+        Constraint::Percentage(20),
+        Constraint::Min(10),
+    ]).header(header).block(Block::default().borders(Borders::ALL).title(tx_title)), main_chunks[1]);
 
    
     let right_chunks = Layout::default().direction(Direction::Vertical).constraints([Constraint::Percentage(50), Constraint::Percentage(50)]).split(main_chunks[2]);
@@ -555,57 +684,109 @@ fn render_dashboard(f: &mut Frame, app: &App, area: Rect) {
 }
 
 fn render_popup(f: &mut Frame, popup: &PopupType, area: Rect, app: &App) {
-    let area = centered_rect(60, 25, area);
+    let width_percent = (area.width * 60 / 100).min(80).max(50);
+    let height_percent = (area.height * 30 / 100).min(30).max(15);
+    let area = centered_rect_percent(width_percent, height_percent, area);
     f.render_widget(Clear, area);
     let block = Block::default().borders(Borders::ALL).style(Style::default().bg(Color::DarkGray));
     let st = |s: usize, target: usize| if s == target { Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD) } else { Style::default() };
 
+    let has_error = app.message.as_ref().map_or(false, |(_, color)| *color == Color::Red);
+    let constraints = match popup {
+        PopupType::AddAccount { .. } => vec![Constraint::Min(3), Constraint::Min(3), if has_error { Constraint::Length(3) } else { Constraint::Length(0) }],
+        PopupType::AddTransaction { .. } => vec![Constraint::Min(3), Constraint::Min(3), Constraint::Min(3), Constraint::Length(1), if has_error { Constraint::Length(3) } else { Constraint::Length(0) }],
+        PopupType::Transfer { .. } => vec![Constraint::Min(3), Constraint::Min(3), Constraint::Min(3), if has_error { Constraint::Length(3) } else { Constraint::Length(0) }],
+        PopupType::AddCategory { .. } => vec![Constraint::Min(3), if has_error { Constraint::Length(3) } else { Constraint::Length(0) }],
+        PopupType::AddBudget { .. } => vec![Constraint::Min(3), Constraint::Min(3), if has_error { Constraint::Length(3) } else { Constraint::Length(0) }],
+        PopupType::DeleteConfirm { .. } => vec![Constraint::Min(2), Constraint::Min(3), if has_error { Constraint::Length(3) } else { Constraint::Length(0) }],
+    };
+    
+    let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints(constraints).split(area);
+    let mut layout_idx = 0;
+
     match popup {
         PopupType::AddAccount { step, name, currency } => {
-            let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3), Constraint::Length(3)]).split(area);
             f.render_widget(block.title("New Account"), area);
-            f.render_widget(Paragraph::new(name.as_str()).block(Block::default().borders(Borders::ALL).title("Name")).style(st(*step, 0)), layout[0]);
-            f.render_widget(Paragraph::new(currency.as_str()).block(Block::default().borders(Borders::ALL).title("Currency")).style(st(*step, 1)), layout[1]);
+            f.render_widget(Paragraph::new(name.as_str()).block(Block::default().borders(Borders::ALL).title("Name")).style(st(*step, 0)), layout[layout_idx]);
+            layout_idx += 1;
+            f.render_widget(Paragraph::new(currency.as_str()).block(Block::default().borders(Borders::ALL).title("Currency")).style(st(*step, 1)), layout[layout_idx]);
+            layout_idx += 1;
         },
         PopupType::AddTransaction { step, amount, desc, category_input } => {
             let match_hint = if let Some((id, name)) = app.resolve_category(category_input) { format!("Matched: [{}] {}", id, name) } else if category_input.trim().is_empty() { "(Optional) Leave empty".to_string() } else { "No match found".to_string() };
             let acc_name = if let Some(acc) = app.get_selected_account() { acc.name.clone() } else { "None".to_string() };
-            let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3), Constraint::Length(3), Constraint::Length(3), Constraint::Length(1)]).split(area);
             f.render_widget(block.title(format!("New Tx for: {}", acc_name)), area);
-            f.render_widget(Paragraph::new(amount.as_str()).block(Block::default().borders(Borders::ALL).title("Amount")).style(st(*step, 0)), layout[0]);
-            f.render_widget(Paragraph::new(desc.as_str()).block(Block::default().borders(Borders::ALL).title("Desc")).style(st(*step, 1)), layout[1]);
-            f.render_widget(Paragraph::new(category_input.as_str()).block(Block::default().borders(Borders::ALL).title("Category (ID or Name)")).style(st(*step, 2)), layout[2]);
-            f.render_widget(Paragraph::new(match_hint).style(Style::default().fg(Color::Cyan)), layout[3]);
+            f.render_widget(Paragraph::new(amount.as_str()).block(Block::default().borders(Borders::ALL).title("Amount")).style(st(*step, 0)), layout[layout_idx]);
+            layout_idx += 1;
+            f.render_widget(Paragraph::new(desc.as_str()).block(Block::default().borders(Borders::ALL).title("Desc")).style(st(*step, 1)), layout[layout_idx]);
+            layout_idx += 1;
+            f.render_widget(Paragraph::new(category_input.as_str()).block(Block::default().borders(Borders::ALL).title("Category (ID or Name)")).style(st(*step, 2)), layout[layout_idx]);
+            layout_idx += 1;
+            f.render_widget(Paragraph::new(match_hint).style(Style::default().fg(Color::Cyan)), layout[layout_idx]);
+            layout_idx += 1;
         },
         PopupType::Transfer { step, from_id, to_id, amount } => {
-            let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3), Constraint::Length(3), Constraint::Length(3)]).split(area);
             f.render_widget(block.title("Transfer"), area);
-            f.render_widget(Paragraph::new(from_id.as_str()).block(Block::default().borders(Borders::ALL).title("From ID")).style(st(*step, 0)), layout[0]);
-            f.render_widget(Paragraph::new(to_id.as_str()).block(Block::default().borders(Borders::ALL).title("To ID")).style(st(*step, 1)), layout[1]);
-            f.render_widget(Paragraph::new(amount.as_str()).block(Block::default().borders(Borders::ALL).title("Amount")).style(st(*step, 2)), layout[2]);
+            f.render_widget(Paragraph::new(from_id.as_str()).block(Block::default().borders(Borders::ALL).title("From ID")).style(st(*step, 0)), layout[layout_idx]);
+            layout_idx += 1;
+            f.render_widget(Paragraph::new(to_id.as_str()).block(Block::default().borders(Borders::ALL).title("To ID")).style(st(*step, 1)), layout[layout_idx]);
+            layout_idx += 1;
+            f.render_widget(Paragraph::new(amount.as_str()).block(Block::default().borders(Borders::ALL).title("Amount")).style(st(*step, 2)), layout[layout_idx]);
+            layout_idx += 1;
         },
         PopupType::AddCategory { name, .. } => {
-             let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3)]).split(area);
              f.render_widget(block.title("New Category"), area);
-             f.render_widget(Paragraph::new(name.as_str()).block(Block::default().borders(Borders::ALL).title("Name")).style(st(0, 0)), layout[0]);
+             f.render_widget(Paragraph::new(name.as_str()).block(Block::default().borders(Borders::ALL).title("Name")).style(st(0, 0)), layout[layout_idx]);
+             layout_idx += 1;
         },
         PopupType::AddBudget { step, amount, category_id } => {
-            let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3), Constraint::Length(3)]).split(area);
             f.render_widget(block.title("New Budget"), area);
-            f.render_widget(Paragraph::new(amount.as_str()).block(Block::default().borders(Borders::ALL).title("Amount")).style(st(*step, 0)), layout[0]);
-            f.render_widget(Paragraph::new(category_id.as_str()).block(Block::default().borders(Borders::ALL).title("Category ID (ID only)")).style(st(*step, 1)), layout[1]);
+            f.render_widget(Paragraph::new(amount.as_str()).block(Block::default().borders(Borders::ALL).title("Amount")).style(st(*step, 0)), layout[layout_idx]);
+            layout_idx += 1;
+            f.render_widget(Paragraph::new(category_id.as_str()).block(Block::default().borders(Borders::ALL).title("Category ID (ID only)")).style(st(*step, 1)), layout[layout_idx]);
+            layout_idx += 1;
         },
         PopupType::DeleteConfirm { type_label, target_id: _, verify_name, input_name } => {
-            let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(2), Constraint::Length(3)]).split(area);
             f.render_widget(block.title(Span::styled(format!("DELETE {}", type_label.to_uppercase()), Style::default().fg(Color::Red).add_modifier(Modifier::BOLD))), area);
             let warn_text = format!("Type name '{}' to confirm:", verify_name);
-            f.render_widget(Paragraph::new(warn_text).style(Style::default().fg(Color::Red)), layout[0]);
-            f.render_widget(Paragraph::new(input_name.as_str()).block(Block::default().borders(Borders::ALL).title("Confirmation")).style(Style::default().fg(Color::Red)), layout[1]);
+            f.render_widget(Paragraph::new(warn_text).style(Style::default().fg(Color::Red)), layout[layout_idx]);
+            layout_idx += 1;
+            f.render_widget(Paragraph::new(input_name.as_str()).block(Block::default().borders(Borders::ALL).title("Confirmation")).style(Style::default().fg(Color::Red)), layout[layout_idx]);
+            layout_idx += 1;
         }
     };
+
+    if has_error && layout_idx < layout.len() {
+        if let Some((msg, color)) = &app.message {
+            f.render_widget(
+                Paragraph::new(msg.as_str())
+                    .style(Style::default().bg(*color).fg(Color::White).add_modifier(Modifier::BOLD))
+                    .alignment(Alignment::Center)
+                    .block(Block::default().borders(Borders::ALL).title("Error")),
+                layout[layout_idx]
+            );
+        }
+    }
 }
 
-fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
-    let popup_layout = Layout::default().direction(Direction::Vertical).constraints([Constraint::Percentage((100 - percent_y) / 2), Constraint::Percentage(percent_y), Constraint::Percentage((100 - percent_y) / 2)]).split(r);
-    Layout::default().direction(Direction::Horizontal).constraints([Constraint::Percentage((100 - percent_x) / 2), Constraint::Percentage(percent_x), Constraint::Percentage((100 - percent_x) / 2)]).split(popup_layout[1])[1]
+fn centered_rect_percent(width: u16, height: u16, r: Rect) -> Rect {
+    let vertical_margin = (r.height.saturating_sub(height)) / 2;
+    let horizontal_margin = (r.width.saturating_sub(width)) / 2;
+    
+    let popup_layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints([
+            Constraint::Length(vertical_margin),
+            Constraint::Length(height),
+            Constraint::Min(0),
+        ])
+        .split(r);
+    Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([
+            Constraint::Length(horizontal_margin),
+            Constraint::Length(width),
+            Constraint::Min(0),
+        ])
+        .split(popup_layout[1])[1]
 }
