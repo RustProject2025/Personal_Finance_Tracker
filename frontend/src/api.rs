@@ -1,5 +1,5 @@
 use reqwest::{Client, StatusCode};
-use crate::models::{LoginRequest, LoginResponse, AccountResponse, TransactionResponse, BudgetResponse};
+use crate::models::{LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, AccountResponse, TransactionResponse, BudgetResponse}; // 引入 Register 相关
 use anyhow::{Result, anyhow};
 
 const BASE_URL: &str = "http://localhost:3000/api";
@@ -18,50 +18,20 @@ impl ApiClient {
         }
     }
 
-    pub async fn login(&mut self, req: LoginRequest) -> Result<()> {
-        let resp = self.client.post(format!("{}/auth/login", BASE_URL))
+    // 新增注册方法
+    pub async fn register(&self, req: RegisterRequest) -> Result<String> {
+        let resp = self.client.post(format!("{}/auth/register", BASE_URL))
             .json(&req)
             .send()
             .await?;
 
         if resp.status() == StatusCode::OK {
-            let data: LoginResponse = resp.json().await?;
-            self.token = Some(data.token);
-            Ok(())
+            let data: RegisterResponse = resp.json().await?;
+            Ok(data.message)
         } else {
-            Err(anyhow!("Login failed"))
-        }
-    }
-
-    pub async fn get_accounts(&self) -> Result<Vec<AccountResponse>> {
-        if let Some(token) = &self.token {
-            let resp = self.client.get(format!("{}/accounts", BASE_URL))
-                .bearer_auth(token)
-                .send()
-                .await?;
-            
-            if resp.status() == StatusCode::OK {
-                let accounts: Vec<AccountResponse> = resp.json().await?;
-                Ok(accounts)
-            } else {
-                Err(anyhow!("Failed to fetch accounts"))
-            }
-        } else {
-            Err(anyhow!("Not authenticated"))
-        }
-    }
-}
-#[derive(Clone)]
-pub struct ApiClient {
-    client: Client,
-    pub token: Option<String>,
-}
-
-impl ApiClient {
-    pub fn new() -> Self {
-        Self {
-            client: Client::new(),
-            token: None,
+            // 尝试读取错误信息
+            let err_text = resp.text().await.unwrap_or_else(|_| "Unknown error".to_string());
+            Err(anyhow!("Registration failed: {}", err_text))
         }
     }
 
@@ -80,7 +50,6 @@ impl ApiClient {
         }
     }
 
-    // 辅助函数：发送带有 Token 的 GET 请求
     async fn get_authenticated<T: serde::de::DeserializeOwned>(&self, endpoint: &str) -> Result<T> {
         if let Some(token) = &self.token {
             let resp = self.client.get(format!("{}{}", BASE_URL, endpoint))

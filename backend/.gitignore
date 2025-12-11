@@ -50,3 +50,4 @@ certs/
 *.7z
 
 .DS_Store
+docker-compose.dev.yml
