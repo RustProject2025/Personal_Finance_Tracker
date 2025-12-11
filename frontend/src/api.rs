@@ -2,7 +2,6 @@ use reqwest::{Client, StatusCode};
 use crate::models::*;
 use anyhow::{Result, anyhow};
 
-
 const BASE_URL: &str = "http://localhost:3000/api";
 
 #[derive(Clone)]
@@ -19,6 +18,7 @@ impl ApiClient {
         }
     }
 
+  
     pub async fn register(&self, req: RegisterRequest) -> Result<String> {
         let resp = self.client.post(format!("{}/auth/register", BASE_URL))
             .json(&req)
@@ -49,7 +49,7 @@ impl ApiClient {
         }
     }
 
-
+ 
     async fn get_auth<T: serde::de::DeserializeOwned>(&self, endpoint: &str) -> Result<T> {
         if let Some(token) = &self.token {
             let resp = self.client.get(format!("{}{}", BASE_URL, endpoint))
@@ -105,6 +105,7 @@ impl ApiClient {
         }
     }
 
+    
     pub async fn get_accounts(&self) -> Result<Vec<AccountResponse>> {
         self.get_auth("/accounts").await
     }
@@ -126,13 +127,9 @@ impl ApiClient {
         self.get_auth("/categories").await
     }
 
+   
     pub async fn create_account(&self, req: CreateAccountRequest) -> Result<()> {
         self.post_auth("/accounts", &req).await
-    }
-
-
-    pub async fn delete_account(&self, id: i32) -> Result<()> {
-        self.delete_auth(&format!("/accounts/{}", id)).await
     }
 
     pub async fn create_transaction(&self, req: CreateTransactionRequest) -> Result<()> {
@@ -149,5 +146,20 @@ impl ApiClient {
 
     pub async fn create_budget(&self, req: CreateBudgetRequest) -> Result<()> {
         self.post_auth("/budgets", &req).await
+    }
+
+    
+    pub async fn delete_account(&self, id: i32) -> Result<()> {
+        self.delete_auth(&format!("/accounts/{}", id)).await
+    }
+
+  
+    pub async fn delete_category(&self, id: i32) -> Result<()> {
+        self.delete_auth(&format!("/categories/{}", id)).await
+    }
+
+   
+    pub async fn delete_budget(&self, id: i32) -> Result<()> {
+        self.delete_auth(&format!("/budgets/{}", id)).await
     }
 }

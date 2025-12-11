@@ -18,6 +18,13 @@ enum AppState {
     InputPopup(PopupType),
 }
 
+#[derive(PartialEq)]
+enum Focus {
+    Accounts,
+    Budgets,
+    Categories,
+}
+
 
 enum PopupType {
     AddAccount { step: usize, name: String, currency: String },
@@ -25,7 +32,14 @@ enum PopupType {
     Transfer { step: usize, from_id: String, to_id: String, amount: String },
     AddCategory { step: usize, name: String },
     AddBudget { step: usize, amount: String, category_id: String },
-    DeleteConfirm { id: i32, target_name: String, input_name: String },
+    
+ 
+    DeleteConfirm { 
+        type_label: String, 
+        target_id: i32, 
+        verify_name: String, 
+        input_name: String 
+    },
 }
 
 #[derive(PartialEq)]
@@ -37,16 +51,25 @@ enum InputMode {
 struct App {
     state: AppState,
     api: ApiClient,
+    
+    // Auth
     input_username: String,
     input_password: String,
     input_mode: InputMode,
     is_register_mode: bool,
     message: Option<(String, Color)>, 
+
+    // Data
     accounts: Vec<AccountResponse>,
     transactions: Vec<TransactionResponse>,
     budgets: Vec<BudgetResponse>,
     categories: Vec<CategoryResponse>, 
+
+    // UI Navigation State
+    focus: Focus, 
     account_list_state: ListState, 
+    budget_list_state: ListState,
+    category_list_state: ListState,
 }
 
 impl App {
@@ -62,37 +85,79 @@ impl App {
             input_mode: InputMode::Username,
             is_register_mode: false,
             message: None,
+            
             accounts: vec![],
             transactions: vec![],
             budgets: vec![],
             categories: vec![],
-            account_list_state: list_state,
+            
+            // 初始化焦点和列表状态
+            focus: Focus::Accounts, 
+            account_list_state: list_state.clone(),
+            budget_list_state: list_state.clone(),
+            category_list_state: list_state,
         }
     }
 
+    // === Helpers ===
     fn get_selected_account(&self) -> Option<&AccountResponse> {
-        if let Some(index) = self.account_list_state.selected() {
-            self.accounts.get(index)
-        } else {
-            None
-        }
+        self.account_list_state.selected().and_then(|i| self.accounts.get(i))
+    }
+    
+    fn get_selected_budget(&self) -> Option<&BudgetResponse> {
+        self.budget_list_state.selected().and_then(|i| self.budgets.get(i))
     }
 
-  
+    fn get_selected_category(&self) -> Option<&CategoryResponse> {
+        self.category_list_state.selected().and_then(|i| self.categories.get(i))
+    }
+
     fn resolve_category(&self, input: &str) -> Option<(i32, String)> {
         let input = input.trim();
         if input.is_empty() { return None; }
-
         if let Ok(id) = input.parse::<i32>() {
             if let Some(cat) = self.categories.iter().find(|c| c.id == id) {
                 return Some((cat.id, cat.name.clone()));
             }
         }
-
         if let Some(cat) = self.categories.iter().find(|c| c.name.eq_ignore_ascii_case(input)) {
             return Some((cat.id, cat.name.clone()));
         }
         None 
+    }
+
+    fn next_item(&mut self) {
+        match self.focus {
+            Focus::Accounts => {
+                let i = next_index(self.account_list_state.selected(), self.accounts.len());
+                self.account_list_state.select(Some(i));
+            }
+            Focus::Budgets => {
+                let i = next_index(self.budget_list_state.selected(), self.budgets.len());
+                self.budget_list_state.select(Some(i));
+            }
+            Focus::Categories => {
+                let i = next_index(self.category_list_state.selected(), self.categories.len());
+                self.category_list_state.select(Some(i));
+            }
+        }
+    }
+
+    fn previous_item(&mut self) {
+        match self.focus {
+            Focus::Accounts => {
+                let i = prev_index(self.account_list_state.selected(), self.accounts.len());
+                self.account_list_state.select(Some(i));
+            }
+            Focus::Budgets => {
+                let i = prev_index(self.budget_list_state.selected(), self.budgets.len());
+                self.budget_list_state.select(Some(i));
+            }
+            Focus::Categories => {
+                let i = prev_index(self.category_list_state.selected(), self.categories.len());
+                self.category_list_state.select(Some(i));
+            }
+        }
     }
 
     fn toggle_auth_mode(&mut self) {
@@ -100,7 +165,6 @@ impl App {
         self.message = None;
     }
 
-    
     async fn try_register(&mut self) {
         let req = LoginRequest { username: self.input_username.clone(), password: self.input_password.clone() };
         match self.api.register(req).await {
@@ -137,122 +201,108 @@ impl App {
     }
 
    
-    async fn delete_current_account(&mut self) {
-        
+    fn init_delete(&mut self) {
+        match self.focus {
+            Focus::Accounts => {
+                if let Some(acc) = self.get_selected_account() {
+                    self.state = AppState::InputPopup(PopupType::DeleteConfirm {
+                        type_label: "Account".to_string(),
+                        target_id: acc.id,
+                        verify_name: acc.name.clone(),
+                        input_name: String::new(),
+                    });
+                }
+            },
+            Focus::Budgets => {
+                if let Some(b) = self.get_selected_budget() {
+                 
+                    let name = b.category_name.clone().unwrap_or("Global".to_string());
+                    self.state = AppState::InputPopup(PopupType::DeleteConfirm {
+                        type_label: "Budget".to_string(),
+                        target_id: b.id,
+                        verify_name: name,
+                        input_name: String::new(),
+                    });
+                }
+            },
+            Focus::Categories => {
+                if let Some(c) = self.get_selected_category() {
+                    self.state = AppState::InputPopup(PopupType::DeleteConfirm {
+                        type_label: "Category".to_string(),
+                        target_id: c.id,
+                        verify_name: c.name.clone(),
+                        input_name: String::new(),
+                    });
+                }
+            }
+        }
     }
 
-    fn next_account(&mut self) {
-        if self.accounts.is_empty() { return; }
-        let i = match self.account_list_state.selected() {
-            Some(i) => { if i >= self.accounts.len() - 1 { 0 } else { i + 1 } }
-            None => 0,
-        };
-        self.account_list_state.select(Some(i));
-    }
 
-    fn previous_account(&mut self) {
-        if self.accounts.is_empty() { return; }
-        let i = match self.account_list_state.selected() {
-            Some(i) => { if i == 0 { self.accounts.len() - 1 } else { i - 1 } }
-            None => 0,
-        };
-        self.account_list_state.select(Some(i));
-    }
-
-    
     async fn submit_popup(&mut self) {
         if let AppState::InputPopup(ref popup) = self.state {
             let result = match popup {
-               
                 PopupType::AddAccount { name, currency, .. } => {
                     let name_trim = name.trim();
-                    
                     if self.accounts.iter().any(|a| a.name.eq_ignore_ascii_case(name_trim)) {
-                        Err(anyhow::anyhow!("Account '{}' already exists! Please use a unique name.", name_trim))
+                        Err(anyhow::anyhow!("Account '{}' already exists!", name_trim))
                     } else {
-                        self.api.create_account(CreateAccountRequest { 
-                            name: name_trim.to_string(), 
-                            currency: Some(currency.clone()) 
-                        }).await
+                        self.api.create_account(CreateAccountRequest { name: name_trim.to_string(), currency: Some(currency.clone()) }).await
                     }
                 },
-                
                 PopupType::AddTransaction { amount, desc, category_input, .. } => {
                     let acc_id = self.get_selected_account().map(|a| a.id);
                     if acc_id.is_none() {
-                        Err(anyhow::anyhow!("Please select an account first!"))
+                        Err(anyhow::anyhow!("Select an account first!"))
                     } else {
                         let input_trim = category_input.trim();
                         let mut final_cat_id = None;
-
                         if !input_trim.is_empty() {
                             if let Some((id, _)) = self.resolve_category(input_trim) {
                                 final_cat_id = Some(id);
                             } else {
-                                return {
-                                    self.message = Some((format!("Invalid Category: '{}' not found. Create it first.", input_trim), Color::Red));
-                                    return; 
-                                };
+                                return { self.message = Some((format!("Invalid Category: '{}'", input_trim), Color::Red)); return; };
                             }
                         }
-
                         let amount_val = amount.parse::<f64>().unwrap_or(0.0);
-                        let is_expense = amount_val < 0.0;
-
                         self.api.create_transaction(CreateTransactionRequest {
                             account_id: acc_id,
-                            account_name: None, 
-                            category_id: final_cat_id,
+                            account_name: None, category_id: final_cat_id,
                             amount: amount.clone(),
-                            r#type: if !is_expense { "income".to_string() } else { "expense".to_string() },
+                            r#type: if amount_val >= 0.0 { "income".to_string() } else { "expense".to_string() },
                             date: chrono::Local::now().format("%Y-%m-%d").to_string(),
                             description: Some(desc.clone()),
                         }).await
                     }
                 },
-                
                 PopupType::Transfer { from_id, to_id, amount, .. } => {
-                    let f_id = from_id.parse().unwrap_or(0);
-                    let t_id = to_id.parse().unwrap_or(0);
-                    self.api.transfer(TransferRequest {
-                        from_account_id: f_id,
-                        to_account_id: t_id,
-                        amount: amount.clone(),
-                        date: None,
-                        description: Some("TUI Transfer".to_string()),
-                    }).await
+                    let f = from_id.parse().unwrap_or(0); let t = to_id.parse().unwrap_or(0);
+                    self.api.transfer(TransferRequest { from_account_id: f, to_account_id: t, amount: amount.clone(), date: None, description: Some("TUI Transfer".to_string()) }).await
                 },
-
-                
                 PopupType::AddCategory { name, .. } => {
                     let name_trim = name.trim();
-                    
-                    if let Some(existing) = self.categories.iter().find(|c| c.name.eq_ignore_ascii_case(name_trim)) {
-                        
-                        Err(anyhow::anyhow!("Category '{}' already exists (ID: {}). Please use existing ID.", existing.name, existing.id))
+                    if self.categories.iter().any(|c| c.name.eq_ignore_ascii_case(name_trim)) {
+                        Err(anyhow::anyhow!("Category exists!"))
                     } else {
-                        self.api.create_category(CreateCategoryRequest {
-                            name: name_trim.to_string(),
-                            parent_id: None
-                        }).await
+                        self.api.create_category(CreateCategoryRequest { name: name_trim.to_string(), parent_id: None }).await
                     }
                 },
-
                 PopupType::AddBudget { amount, category_id, .. } => {
-                    let cat_id = if category_id.is_empty() { None } else { Some(category_id.parse().unwrap_or(0)) };
-                    self.api.create_budget(CreateBudgetRequest {
-                        category_id: cat_id,
-                        amount: amount.clone(),
-                        period: Some("monthly".to_string()),
-                        start_date: None
-                    }).await
+                    let cat_id = if category_id.trim().is_empty() { None } else { Some(category_id.parse().unwrap_or(0)) };
+                    self.api.create_budget(CreateBudgetRequest { category_id: cat_id, amount: amount.clone(), period: Some("monthly".to_string()), start_date: None }).await
                 },
-
-                PopupType::DeleteConfirm { id, target_name, input_name } => {
-                    if input_name == target_name {
-                        self.api.delete_account(*id).await
+                
+              
+                PopupType::DeleteConfirm { type_label, target_id, verify_name, input_name } => {
+                    if input_name != verify_name {
+                        Err(anyhow::anyhow!("Name mismatch! Cancelled."))
                     } else {
-                        Err(anyhow::anyhow!("Name mismatch! Deletion cancelled."))
+                        match type_label.as_str() {
+                            "Account" => self.api.delete_account(*target_id).await,
+                            "Category" => self.api.delete_category(*target_id).await,
+                            "Budget" => self.api.delete_budget(*target_id).await,
+                            _ => Ok(()),
+                        }
                     }
                 }
             };
@@ -260,21 +310,30 @@ impl App {
             match result {
                 Ok(_) => {
                     self.message = Some(("Action Successful!".to_string(), Color::Green));
-                    if let PopupType::DeleteConfirm { .. } = popup {
-                        self.account_list_state.select(Some(0));
-                    }
                     self.refresh_all_data().await;
                     self.state = AppState::Dashboard;
                 },
-                Err(e) => {
-                    
-                    self.message = Some((format!("Error: {}", e), Color::Red));
-                },
+                Err(e) => self.message = Some((format!("Error: {}", e), Color::Red)),
             }
         }
     }
 }
 
+
+fn next_index(curr: Option<usize>, len: usize) -> usize {
+    if len == 0 { return 0; }
+    match curr {
+        Some(i) => if i >= len - 1 { 0 } else { i + 1 },
+        None => 0,
+    }
+}
+fn prev_index(curr: Option<usize>, len: usize) -> usize {
+    if len == 0 { return 0; }
+    match curr {
+        Some(i) => if i == 0 { len - 1 } else { i - 1 },
+        None => 0,
+    }
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -293,6 +352,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             if let Event::Key(key) = event::read()? {
                 match app.state {
                     AppState::Login => {
+                        
                         match key.code {
                             KeyCode::Tab => app.input_mode = match app.input_mode { InputMode::Username => InputMode::Password, InputMode::Password => InputMode::Username },
                             KeyCode::Char('r') if key.modifiers.contains(KeyModifiers::CONTROL) => app.toggle_auth_mode(),
@@ -310,24 +370,45 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         match key.code {
                             KeyCode::Esc => break,
                             KeyCode::Char('r') => app.refresh_all_data().await,
-                            KeyCode::Down => { app.next_account(); app.refresh_transactions().await; },
-                            KeyCode::Up => { app.previous_account(); app.refresh_transactions().await; },
+                            
+                            
+                            KeyCode::Left => {
+                                app.focus = match app.focus {
+                                    Focus::Categories => Focus::Budgets,
+                                    Focus::Budgets => Focus::Accounts,
+                                    Focus::Accounts => Focus::Accounts,
+                                };
+                            },
+                            KeyCode::Right => {
+                                app.focus = match app.focus {
+                                    Focus::Accounts => Focus::Budgets,
+                                    Focus::Budgets => Focus::Categories,
+                                    Focus::Categories => Focus::Categories,
+                                };
+                            },
+                           
+                            KeyCode::Down => { 
+                                app.next_item(); 
+                                if app.focus == Focus::Accounts { app.refresh_transactions().await; }
+                            },
+                            KeyCode::Up => { 
+                                app.previous_item(); 
+                                if app.focus == Focus::Accounts { app.refresh_transactions().await; }
+                            },
+
+                           
                             KeyCode::Char('a') => app.state = AppState::InputPopup(PopupType::AddAccount { step: 0, name: String::new(), currency: "USD".to_string() }),
                             KeyCode::Char('t') => {
-                                if app.accounts.is_empty() {
-                                    app.message = Some(("Create an account first!".to_string(), Color::Red));
-                                } else {
-                                    app.state = AppState::InputPopup(PopupType::AddTransaction { step: 0, amount: String::new(), desc: String::new(), category_input: String::new() });
-                                }
-                            },
-                            KeyCode::Char('d') => {
-                                if let Some(acc) = app.get_selected_account() {
-                                    app.state = AppState::InputPopup(PopupType::DeleteConfirm { id: acc.id, target_name: acc.name.clone(), input_name: String::new() });
-                                } else { app.message = Some(("No account selected!".to_string(), Color::Red)); }
+                                if app.accounts.is_empty() { app.message = Some(("Create an account first!".to_string(), Color::Red)); }
+                                else { app.state = AppState::InputPopup(PopupType::AddTransaction { step: 0, amount: String::new(), desc: String::new(), category_input: String::new() }); }
                             },
                             KeyCode::Char('x') => app.state = AppState::InputPopup(PopupType::Transfer { step: 0, from_id: String::new(), to_id: String::new(), amount: String::new() }),
                             KeyCode::Char('c') => app.state = AppState::InputPopup(PopupType::AddCategory { step: 0, name: String::new() }),
                             KeyCode::Char('b') => app.state = AppState::InputPopup(PopupType::AddBudget { step: 0, amount: String::new(), category_id: String::new() }),
+                            
+                            
+                            KeyCode::Char('d') => app.init_delete(),
+                            
                             _ => {}
                         }
                     }
@@ -336,6 +417,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         match key.code {
                             KeyCode::Esc => app.state = AppState::Dashboard,
                             KeyCode::Enter => app.submit_popup().await,
+                            
                             KeyCode::Down => {
                                 match popup {
                                     PopupType::AddAccount { step, .. } => *step = (*step + 1) % 2,
@@ -354,6 +436,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                                     _ => {}
                                 }
                             },
+                          
                             KeyCode::Char(c) => {
                                 match popup {
                                     PopupType::AddAccount { step, name, currency } => if *step == 0 { name.push(c) } else { currency.push(c) },
@@ -402,6 +485,75 @@ fn ui(f: &mut Frame, app: &App) {
 }
 
 
+fn render_login(f: &mut Frame, app: &App, area: Rect) {
+    let chunks = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3), Constraint::Length(3), Constraint::Length(3), Constraint::Length(3), Constraint::Min(1)]).split(area);
+    let (title_text, title_color) = if app.is_register_mode { ("REGISTER NEW ACCOUNT", Color::Magenta) } else { ("PERSONAL FINANCE TRACKER - LOGIN", Color::Cyan) };
+    f.render_widget(Paragraph::new(title_text).style(Style::default().fg(title_color).add_modifier(Modifier::BOLD)).alignment(Alignment::Center), chunks[0]);
+    f.render_widget(Paragraph::new(app.input_username.as_str()).block(Block::default().borders(Borders::ALL).title("Username").border_style(if app.input_mode == InputMode::Username { Style::default().fg(Color::Yellow) } else { Style::default() })), chunks[1]);
+    f.render_widget(Paragraph::new(app.input_password.chars().map(|_| '*').collect::<String>()).block(Block::default().borders(Borders::ALL).title("Password").border_style(if app.input_mode == InputMode::Password { Style::default().fg(Color::Yellow) } else { Style::default() })), chunks[2]);
+    let mode_txt = if app.is_register_mode { "Switch to Login (Ctrl+r)" } else { "Switch to Register (Ctrl+r)" };
+    f.render_widget(Paragraph::new(mode_txt).alignment(Alignment::Center), chunks[3]);
+    if let Some((msg, color)) = &app.message { f.render_widget(Paragraph::new(msg.as_str()).style(Style::default().fg(*color)).alignment(Alignment::Center), chunks[4]); }
+}
+
+fn render_dashboard(f: &mut Frame, app: &App, area: Rect) {
+    let vertical_chunks = Layout::default().direction(Direction::Vertical).constraints([Constraint::Length(3), Constraint::Min(0)]).split(area);
+    let help_text = "Nav: ←/→ Switch Panel | ↑/↓ Select | 'd' Delete | 't' Tx | 'a' Acc | 'x' Transfer | 'c' Cat | 'b' Budget";
+    f.render_widget(Paragraph::new(help_text).style(Style::default().fg(Color::White).bg(Color::Blue)).alignment(Alignment::Center).block(Block::default().borders(Borders::ALL)), vertical_chunks[0]);
+
+    let main_chunks = Layout::default().direction(Direction::Horizontal).constraints([Constraint::Percentage(25), Constraint::Percentage(45), Constraint::Percentage(30)]).split(vertical_chunks[1]);
+
+   
+    let border_style = |active: bool| if active { Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD) } else { Style::default() };
+
+    
+    let account_items: Vec<ListItem> = app.accounts.iter().map(|acc| {
+        let content = format!("[#{}] {} : {}", acc.id, acc.name, acc.balance);
+        ListItem::new(content).style(Style::default().fg(Color::Cyan))
+    }).collect();
+    let accounts_list = List::new(account_items)
+        .block(Block::default().borders(Borders::ALL).title("Accounts").border_style(border_style(app.focus == Focus::Accounts)))
+        .highlight_style(Style::default().bg(Color::DarkGray).add_modifier(Modifier::BOLD)).highlight_symbol(">> ");
+    f.render_stateful_widget(accounts_list, main_chunks[0], &mut app.account_list_state.clone());
+
+   
+    let tx_title = if let Some(acc) = app.get_selected_account() { format!("Transactions (Account #{})", acc.id) } else { "Transactions (All)".to_string() };
+    let header_cells = ["Date", "Desc", "Cat", "Amt"].iter().map(|h| Cell::from(*h).style(Style::default().fg(Color::Yellow)));
+    let header = Row::new(header_cells).height(1).bottom_margin(1);
+    let rows = app.transactions.iter().map(|t| {
+        let amount_style = if t.r#type == "expense" { Style::default().fg(Color::Red) } else { Style::default().fg(Color::Green) };
+        let cells = vec![Cell::from(t.date.clone()), Cell::from(t.description.clone().unwrap_or_default()), Cell::from(t.category_name.clone().unwrap_or_default()), Cell::from(t.amount.clone()).style(amount_style)];
+        Row::new(cells).height(1)
+    });
+    f.render_widget(Table::new(rows, [Constraint::Length(10), Constraint::Percentage(40), Constraint::Percentage(20), Constraint::Length(10)]).header(header).block(Block::default().borders(Borders::ALL).title(tx_title)), main_chunks[1]);
+
+   
+    let right_chunks = Layout::default().direction(Direction::Vertical).constraints([Constraint::Percentage(50), Constraint::Percentage(50)]).split(main_chunks[2]);
+    
+    let budget_items: Vec<ListItem> = app.budgets.iter().map(|b| {
+        let name = b.category_name.as_deref().unwrap_or("Global");
+        let content = format!("{} {}/{}", name, b.spent, b.amount);
+        let color = if b.is_over_budget { Color::Red } else { Color::Green };
+        ListItem::new(content).style(Style::default().fg(color))
+    }).collect();
+    let budget_list = List::new(budget_items)
+        .block(Block::default().borders(Borders::ALL).title("Budgets").border_style(border_style(app.focus == Focus::Budgets)))
+        .highlight_style(Style::default().bg(Color::DarkGray).add_modifier(Modifier::BOLD)).highlight_symbol(">> ");
+    f.render_stateful_widget(budget_list, right_chunks[0], &mut app.budget_list_state.clone());
+
+    
+    let cat_items: Vec<ListItem> = app.categories.iter().map(|c| ListItem::new(format!("{}: {}", c.id, c.name))).collect();
+    let cat_list = List::new(cat_items)
+        .block(Block::default().borders(Borders::ALL).title("Categories").border_style(border_style(app.focus == Focus::Categories)))
+        .highlight_style(Style::default().bg(Color::DarkGray).add_modifier(Modifier::BOLD)).highlight_symbol(">> ");
+    f.render_stateful_widget(cat_list, right_chunks[1], &mut app.category_list_state.clone());
+
+    if let Some((msg, color)) = &app.message {
+        let msg_area = Rect { x: area.x, y: area.height.saturating_sub(1), width: area.width, height: 1 };
+        f.render_widget(Paragraph::new(msg.as_str()).style(Style::default().bg(*color).fg(Color::Black)), msg_area);
+    }
+}
+
 fn render_popup(f: &mut Frame, popup: &PopupType, area: Rect, app: &App) {
     let area = centered_rect(60, 25, area);
     f.render_widget(Clear, area);
@@ -416,17 +568,13 @@ fn render_popup(f: &mut Frame, popup: &PopupType, area: Rect, app: &App) {
             f.render_widget(Paragraph::new(currency.as_str()).block(Block::default().borders(Borders::ALL).title("Currency")).style(st(*step, 1)), layout[1]);
         },
         PopupType::AddTransaction { step, amount, desc, category_input } => {
-            let match_hint = if let Some((id, name)) = app.resolve_category(category_input) {
-                format!("Matched: [{}] {}", id, name)
-            } else if category_input.trim().is_empty() {
-                "(Optional) Leave empty".to_string()
-            } else { "No match found".to_string() };
+            let match_hint = if let Some((id, name)) = app.resolve_category(category_input) { format!("Matched: [{}] {}", id, name) } else if category_input.trim().is_empty() { "(Optional) Leave empty".to_string() } else { "No match found".to_string() };
             let acc_name = if let Some(acc) = app.get_selected_account() { acc.name.clone() } else { "None".to_string() };
             let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3), Constraint::Length(3), Constraint::Length(3), Constraint::Length(1)]).split(area);
             f.render_widget(block.title(format!("New Tx for: {}", acc_name)), area);
             f.render_widget(Paragraph::new(amount.as_str()).block(Block::default().borders(Borders::ALL).title("Amount")).style(st(*step, 0)), layout[0]);
             f.render_widget(Paragraph::new(desc.as_str()).block(Block::default().borders(Borders::ALL).title("Desc")).style(st(*step, 1)), layout[1]);
-            f.render_widget(Paragraph::new(category_input.as_str()).block(Block::default().borders(Borders::ALL).title("Category")).style(st(*step, 2)), layout[2]);
+            f.render_widget(Paragraph::new(category_input.as_str()).block(Block::default().borders(Borders::ALL).title("Category (ID or Name)")).style(st(*step, 2)), layout[2]);
             f.render_widget(Paragraph::new(match_hint).style(Style::default().fg(Color::Cyan)), layout[3]);
         },
         PopupType::Transfer { step, from_id, to_id, amount } => {
@@ -445,83 +593,19 @@ fn render_popup(f: &mut Frame, popup: &PopupType, area: Rect, app: &App) {
             let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3), Constraint::Length(3)]).split(area);
             f.render_widget(block.title("New Budget"), area);
             f.render_widget(Paragraph::new(amount.as_str()).block(Block::default().borders(Borders::ALL).title("Amount")).style(st(*step, 0)), layout[0]);
-            f.render_widget(Paragraph::new(category_id.as_str()).block(Block::default().borders(Borders::ALL).title("Category ID")).style(st(*step, 1)), layout[1]);
+            f.render_widget(Paragraph::new(category_id.as_str()).block(Block::default().borders(Borders::ALL).title("Category ID (ID only)")).style(st(*step, 1)), layout[1]);
         },
-        PopupType::DeleteConfirm { target_name, input_name, .. } => {
+        PopupType::DeleteConfirm { type_label, target_id: _, verify_name, input_name } => {
             let layout = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(2), Constraint::Length(3)]).split(area);
-            f.render_widget(block.title(Span::styled("DANGER ZONE: DELETE ACCOUNT", Style::default().fg(Color::Red).add_modifier(Modifier::BOLD))), area);
-            let warn_text = format!("Type account name '{}' to confirm:", target_name);
+            f.render_widget(block.title(Span::styled(format!("DELETE {}", type_label.to_uppercase()), Style::default().fg(Color::Red).add_modifier(Modifier::BOLD))), area);
+            let warn_text = format!("Type name '{}' to confirm:", verify_name);
             f.render_widget(Paragraph::new(warn_text).style(Style::default().fg(Color::Red)), layout[0]);
             f.render_widget(Paragraph::new(input_name.as_str()).block(Block::default().borders(Borders::ALL).title("Confirmation")).style(Style::default().fg(Color::Red)), layout[1]);
         }
     };
 }
 
-fn render_dashboard(f: &mut Frame, app: &App, area: Rect) {
-  
-    let vertical_chunks = Layout::default().direction(Direction::Vertical).constraints([Constraint::Length(3), Constraint::Min(0)]).split(area);
-    let help_text = "Nav: ↑/↓ | 't' Add Tx | 'a' Add Acc | 'd' Delete Acc | 'x' Transfer | 'c' Category | 'b' Budget";
-    let header = Paragraph::new(help_text).style(Style::default().fg(Color::White).bg(Color::Blue)).alignment(Alignment::Center).block(Block::default().borders(Borders::ALL));
-    f.render_widget(header, vertical_chunks[0]);
-
-    let main_chunks = Layout::default().direction(Direction::Horizontal).constraints([Constraint::Percentage(25), Constraint::Percentage(45), Constraint::Percentage(30)]).split(vertical_chunks[1]);
-
-    let account_items: Vec<ListItem> = app.accounts.iter().map(|acc| {
-        let content = format!("[#{}] {} : {}", acc.id, acc.name, acc.balance);
-        ListItem::new(content).style(Style::default().fg(Color::Cyan))
-    }).collect();
-    let accounts_list = List::new(account_items).block(Block::default().borders(Borders::ALL).title("Accounts (Select)")).highlight_style(Style::default().bg(Color::DarkGray).add_modifier(Modifier::BOLD)).highlight_symbol(">> ");
-    f.render_stateful_widget(accounts_list, main_chunks[0], &mut app.account_list_state.clone());
-
-    let tx_title = if let Some(acc) = app.get_selected_account() { format!("Transactions (Account #{})", acc.id) } else { "Transactions (All)".to_string() };
-    let header_cells = ["Date", "Desc", "Cat", "Amt"].iter().map(|h| Cell::from(*h).style(Style::default().fg(Color::Yellow)));
-    let header = Row::new(header_cells).height(1).bottom_margin(1);
-    let rows = app.transactions.iter().map(|t| {
-        let amount_style = if t.r#type == "expense" { Style::default().fg(Color::Red) } else { Style::default().fg(Color::Green) };
-        let cells = vec![Cell::from(t.date.clone()), Cell::from(t.description.clone().unwrap_or_default()), Cell::from(t.category_name.clone().unwrap_or_default()), Cell::from(t.amount.clone()).style(amount_style)];
-        Row::new(cells).height(1)
-    });
-    let t_table = Table::new(rows, [Constraint::Length(10), Constraint::Percentage(40), Constraint::Percentage(20), Constraint::Length(10)]).header(header).block(Block::default().borders(Borders::ALL).title(tx_title));
-    f.render_widget(t_table, main_chunks[1]);
-
-    let right_chunks = Layout::default().direction(Direction::Vertical).constraints([Constraint::Percentage(50), Constraint::Percentage(50)]).split(main_chunks[2]);
-    let b_constraints: Vec<Constraint> = app.budgets.iter().map(|_| Constraint::Length(2)).collect();
-    let b_layout = Layout::default().direction(Direction::Vertical).constraints(b_constraints).split(right_chunks[0]);
-    f.render_widget(Block::default().borders(Borders::ALL).title("Budgets"), right_chunks[0]);
-    for (i, budget) in app.budgets.iter().enumerate() {
-        if i >= b_layout.len() { break; }
-        let spent = budget.spent.parse::<f64>().unwrap_or(0.0);
-        let amount = budget.amount.parse::<f64>().unwrap_or(1.0);
-        let ratio = (spent / amount).min(1.0);
-        let label = format!("{} {}/{}", budget.category_name.clone().unwrap_or("Total".to_string()), budget.spent, budget.amount);
-        let color = if budget.is_over_budget { Color::Red } else { Color::Green };
-        let gauge_area = b_layout[i].inner(&Margin{horizontal:1, vertical:0});
-        f.render_widget(Gauge::default().gauge_style(Style::default().fg(color)).ratio(ratio).label(label), gauge_area);
-    }
-    let cat_items: Vec<ListItem> = app.categories.iter().map(|c| ListItem::new(format!("{}: {}", c.id, c.name))).collect();
-    f.render_widget(List::new(cat_items).block(Block::default().borders(Borders::ALL).title("Categories (Ref)")), right_chunks[1]);
-
-    if let Some((msg, color)) = &app.message {
-        let msg_area = Rect { x: area.x, y: area.height.saturating_sub(1), width: area.width, height: 1 };
-        f.render_widget(Paragraph::new(msg.as_str()).style(Style::default().bg(*color).fg(Color::Black)), msg_area);
-    }
-}
-
 fn centered_rect(percent_x: u16, percent_y: u16, r: Rect) -> Rect {
     let popup_layout = Layout::default().direction(Direction::Vertical).constraints([Constraint::Percentage((100 - percent_y) / 2), Constraint::Percentage(percent_y), Constraint::Percentage((100 - percent_y) / 2)]).split(r);
     Layout::default().direction(Direction::Horizontal).constraints([Constraint::Percentage((100 - percent_x) / 2), Constraint::Percentage(percent_x), Constraint::Percentage((100 - percent_x) / 2)]).split(popup_layout[1])[1]
-}
-
-fn render_login(f: &mut Frame, app: &App, area: Rect) {
-    let chunks = Layout::default().direction(Direction::Vertical).margin(2).constraints([Constraint::Length(3), Constraint::Length(3), Constraint::Length(3), Constraint::Length(3), Constraint::Min(1)]).split(area);
-    let (title_text, title_color) = if app.is_register_mode { ("REGISTER NEW ACCOUNT", Color::Magenta) } else { ("PERSONAL FINANCE TRACKER - LOGIN", Color::Cyan) };
-    f.render_widget(Paragraph::new(title_text).style(Style::default().fg(title_color).add_modifier(Modifier::BOLD)).alignment(Alignment::Center), chunks[0]);
-    let username_block = Paragraph::new(app.input_username.as_str()).block(Block::default().borders(Borders::ALL).title("Username").border_style(if app.input_mode == InputMode::Username { Style::default().fg(Color::Yellow) } else { Style::default() }));
-    f.render_widget(username_block, chunks[1]);
-    let pass_mask: String = app.input_password.chars().map(|_| '*').collect();
-    let password_block = Paragraph::new(pass_mask.as_str()).block(Block::default().borders(Borders::ALL).title("Password").border_style(if app.input_mode == InputMode::Password { Style::default().fg(Color::Yellow) } else { Style::default() }));
-    f.render_widget(password_block, chunks[2]);
-    let mode_txt = if app.is_register_mode { "Switch to Login (Ctrl+r)" } else { "Switch to Register (Ctrl+r)" };
-    f.render_widget(Paragraph::new(mode_txt).alignment(Alignment::Center), chunks[3]);
-    if let Some((msg, color)) = &app.message { f.render_widget(Paragraph::new(msg.as_str()).style(Style::default().fg(*color)).alignment(Alignment::Center), chunks[4]); }
 }
