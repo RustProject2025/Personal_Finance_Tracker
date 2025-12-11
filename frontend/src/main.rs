@@ -501,14 +501,30 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                             },
 
                            
-                            KeyCode::Char('a') => app.state = AppState::InputPopup(PopupType::AddAccount { step: 0, name: String::new(), currency: "USD".to_string() }),
-                            KeyCode::Char('t') => {
-                                if app.accounts.is_empty() { app.message = Some(("Create an account first!".to_string(), Color::Red)); }
-                                else { app.state = AppState::InputPopup(PopupType::AddTransaction { step: 0, amount: String::new(), desc: String::new(), category_input: String::new() }); }
+                            KeyCode::Char('a') => {
+                                app.message = None;
+                                app.state = AppState::InputPopup(PopupType::AddAccount { step: 0, name: String::new(), currency: "USD".to_string() });
                             },
-                            KeyCode::Char('x') => app.state = AppState::InputPopup(PopupType::Transfer { step: 0, from_id: String::new(), to_id: String::new(), amount: String::new() }),
-                            KeyCode::Char('c') => app.state = AppState::InputPopup(PopupType::AddCategory { name: String::new() }),
-                            KeyCode::Char('b') => app.state = AppState::InputPopup(PopupType::AddBudget { step: 0, amount: String::new(), category_id: String::new() }),
+                            KeyCode::Char('t') => {
+                                if app.accounts.is_empty() { 
+                                    app.message = Some(("Create an account first!".to_string(), Color::Red)); 
+                                } else { 
+                                    app.message = None;
+                                    app.state = AppState::InputPopup(PopupType::AddTransaction { step: 0, amount: String::new(), desc: String::new(), category_input: String::new() }); 
+                                }
+                            },
+                            KeyCode::Char('x') => {
+                                app.message = None;
+                                app.state = AppState::InputPopup(PopupType::Transfer { step: 0, from_id: String::new(), to_id: String::new(), amount: String::new() });
+                            },
+                            KeyCode::Char('c') => {
+                                app.message = None;
+                                app.state = AppState::InputPopup(PopupType::AddCategory { name: String::new() });
+                            },
+                            KeyCode::Char('b') => {
+                                app.message = None;
+                                app.state = AppState::InputPopup(PopupType::AddBudget { step: 0, amount: String::new(), category_id: String::new() });
+                            },
                             
                             
                             KeyCode::Char('d') => app.init_delete(),
@@ -675,7 +691,7 @@ fn render_popup(f: &mut Frame, popup: &PopupType, area: Rect, app: &App) {
     let block = Block::default().borders(Borders::ALL).style(Style::default().bg(Color::DarkGray));
     let st = |s: usize, target: usize| if s == target { Style::default().fg(Color::Yellow).add_modifier(Modifier::BOLD) } else { Style::default() };
 
-    let has_error = app.message.is_some();
+    let has_error = app.message.as_ref().map_or(false, |(_, color)| *color == Color::Red);
     let constraints = match popup {
         PopupType::AddAccount { .. } => vec![Constraint::Min(3), Constraint::Min(3), if has_error { Constraint::Length(3) } else { Constraint::Length(0) }],
         PopupType::AddTransaction { .. } => vec![Constraint::Min(3), Constraint::Min(3), Constraint::Min(3), Constraint::Length(1), if has_error { Constraint::Length(3) } else { Constraint::Length(0) }],
