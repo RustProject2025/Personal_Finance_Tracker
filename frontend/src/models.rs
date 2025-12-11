@@ -1,11 +1,11 @@
 use serde::{Deserialize, Serialize};
 
+// ... Auth structs ...
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct LoginRequest {
     pub username: String,
     pub password: String,
 }
-
 pub type RegisterRequest = LoginRequest;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -21,6 +21,7 @@ pub struct RegisterResponse {
     pub user_id: i32,
 }
 
+// ... Accounts ...
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct AccountResponse {
     pub id: i32,
@@ -35,14 +36,14 @@ pub struct CreateAccountRequest {
     pub currency: Option<String>,
 }
 
-
+// ... Transactions ...
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TransactionResponse {
     pub id: i32,
     pub account_name: String,
     pub category_name: Option<String>,
     pub amount: String,
-    pub r#type: String, // 'income', 'expense', 'transfer'
+    pub r#type: String, 
     pub date: String,
     pub description: Option<String>,
 }
@@ -53,7 +54,7 @@ pub struct CreateTransactionRequest {
     pub account_name: Option<String>, 
     pub category_id: Option<i32>,  
     pub amount: String,
-    pub r#type: String,
+    pub r#type: String, 
     pub date: String,   
     pub description: Option<String>,
 }
@@ -67,7 +68,7 @@ pub struct TransferRequest {
     pub description: Option<String>,
 }
 
-
+// ... Categories ...
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CategoryResponse {
     pub id: i32,
@@ -80,7 +81,7 @@ pub struct CreateCategoryRequest {
     pub parent_id: Option<i32>,
 }
 
-
+// ... Budgets ...
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct BudgetResponse {
     pub id: i32,

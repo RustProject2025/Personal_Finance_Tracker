@@ -19,7 +19,6 @@ impl ApiClient {
         }
     }
 
- 
     pub async fn register(&self, req: RegisterRequest) -> Result<String> {
         let resp = self.client.post(format!("{}/auth/register", BASE_URL))
             .json(&req)
@@ -50,7 +49,7 @@ impl ApiClient {
         }
     }
 
- 
+
     async fn get_auth<T: serde::de::DeserializeOwned>(&self, endpoint: &str) -> Result<T> {
         if let Some(token) = &self.token {
             let resp = self.client.get(format!("{}{}", BASE_URL, endpoint))
@@ -88,7 +87,24 @@ impl ApiClient {
         }
     }
 
-  
+    async fn delete_auth(&self, endpoint: &str) -> Result<()> {
+        if let Some(token) = &self.token {
+            let resp = self.client.delete(format!("{}{}", BASE_URL, endpoint))
+                .bearer_auth(token)
+                .send()
+                .await?;
+            
+            if resp.status().is_success() {
+                Ok(())
+            } else {
+                let err_text = resp.text().await.unwrap_or_default();
+                Err(anyhow!("Delete failed: {}", err_text))
+            }
+        } else {
+            Err(anyhow!("Not authenticated"))
+        }
+    }
+
     pub async fn get_accounts(&self) -> Result<Vec<AccountResponse>> {
         self.get_auth("/accounts").await
     }
@@ -110,9 +126,13 @@ impl ApiClient {
         self.get_auth("/categories").await
     }
 
-   
     pub async fn create_account(&self, req: CreateAccountRequest) -> Result<()> {
         self.post_auth("/accounts", &req).await
+    }
+
+
+    pub async fn delete_account(&self, id: i32) -> Result<()> {
+        self.delete_auth(&format!("/accounts/{}", id)).await
     }
 
     pub async fn create_transaction(&self, req: CreateTransactionRequest) -> Result<()> {
