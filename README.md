@@ -136,6 +136,9 @@ cargo run
 ```bash
 
 #Before running the frontend, you can inject some sample data
+#if you don't have the requests, you can use this command to install the requests
+pip install requests
+#inject the data
 python inject_data.py
 
 #frontend runing in the terminal window
