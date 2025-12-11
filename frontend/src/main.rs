@@ -30,7 +30,7 @@ enum PopupType {
     AddAccount { step: usize, name: String, currency: String },
     AddTransaction { step: usize, amount: String, desc: String, category_input: String }, 
     Transfer { step: usize, from_id: String, to_id: String, amount: String },
-    AddCategory { step: usize, name: String },
+    AddCategory { name: String },
     AddBudget { step: usize, amount: String, category_id: String },
     
  
@@ -261,7 +261,8 @@ impl App {
                             if let Some((id, _)) = self.resolve_category(input_trim) {
                                 final_cat_id = Some(id);
                             } else {
-                                return { self.message = Some((format!("Invalid Category: '{}'", input_trim), Color::Red)); return; };
+                                self.message = Some((format!("Invalid Category: '{}'", input_trim), Color::Red));
+                                return;
                             }
                         }
                         let amount_val = amount.parse::<f64>().unwrap_or(0.0);
@@ -403,7 +404,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                                 else { app.state = AppState::InputPopup(PopupType::AddTransaction { step: 0, amount: String::new(), desc: String::new(), category_input: String::new() }); }
                             },
                             KeyCode::Char('x') => app.state = AppState::InputPopup(PopupType::Transfer { step: 0, from_id: String::new(), to_id: String::new(), amount: String::new() }),
-                            KeyCode::Char('c') => app.state = AppState::InputPopup(PopupType::AddCategory { step: 0, name: String::new() }),
+                            KeyCode::Char('c') => app.state = AppState::InputPopup(PopupType::AddCategory { name: String::new() }),
                             KeyCode::Char('b') => app.state = AppState::InputPopup(PopupType::AddBudget { step: 0, amount: String::new(), category_id: String::new() }),
                             
                             
@@ -508,7 +509,7 @@ fn render_dashboard(f: &mut Frame, app: &App, area: Rect) {
 
     
     let account_items: Vec<ListItem> = app.accounts.iter().map(|acc| {
-        let content = format!("[#{}] {} : {}", acc.id, acc.name, acc.balance);
+        let content = format!("[#{}] {}", acc.id, acc.name);
         ListItem::new(content).style(Style::default().fg(Color::Cyan))
     }).collect();
     let accounts_list = List::new(account_items)
@@ -517,7 +518,11 @@ fn render_dashboard(f: &mut Frame, app: &App, area: Rect) {
     f.render_stateful_widget(accounts_list, main_chunks[0], &mut app.account_list_state.clone());
 
    
-    let tx_title = if let Some(acc) = app.get_selected_account() { format!("Transactions (Account #{})", acc.id) } else { "Transactions (All)".to_string() };
+    let tx_title = if let Some(acc) = app.get_selected_account() { 
+        format!("Transactions (Account #{} | Balance: {} {})", acc.id, acc.balance, acc.currency) 
+    } else { 
+        "Transactions (All)".to_string() 
+    };
     let header_cells = ["Date", "Desc", "Cat", "Amt"].iter().map(|h| Cell::from(*h).style(Style::default().fg(Color::Yellow)));
     let header = Row::new(header_cells).height(1).bottom_margin(1);
     let rows = app.transactions.iter().map(|t| {
