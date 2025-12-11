@@ -491,7 +491,7 @@ fn render_login(f: &mut Frame, app: &App, area: Rect) {
     f.render_widget(Paragraph::new(title_text).style(Style::default().fg(title_color).add_modifier(Modifier::BOLD)).alignment(Alignment::Center), chunks[0]);
     f.render_widget(Paragraph::new(app.input_username.as_str()).block(Block::default().borders(Borders::ALL).title("Username").border_style(if app.input_mode == InputMode::Username { Style::default().fg(Color::Yellow) } else { Style::default() })), chunks[1]);
     f.render_widget(Paragraph::new(app.input_password.chars().map(|_| '*').collect::<String>()).block(Block::default().borders(Borders::ALL).title("Password").border_style(if app.input_mode == InputMode::Password { Style::default().fg(Color::Yellow) } else { Style::default() })), chunks[2]);
-    let mode_txt = if app.is_register_mode { "Switch to Login (Ctrl+r)" } else { "Switch to Register (Ctrl+r)" };
+    let mode_txt = if app.is_register_mode { "Switch to Login (Ctrl+r)" } else { "Use (Tab) to switch line.Use (Enter) to submit. Switch to Register (Ctrl+r)" };
     f.render_widget(Paragraph::new(mode_txt).alignment(Alignment::Center), chunks[3]);
     if let Some((msg, color)) = &app.message { f.render_widget(Paragraph::new(msg.as_str()).style(Style::default().fg(*color)).alignment(Alignment::Center), chunks[4]); }
 }
