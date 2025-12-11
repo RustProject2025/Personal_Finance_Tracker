@@ -18,7 +18,7 @@ enum AppState {
     InputPopup(PopupType),
 }
 
-// 弹窗类型
+
 enum PopupType {
     AddAccount { step: usize, name: String, currency: String },
     AddTransaction { step: usize, amount: String, desc: String, category_input: String }, 
