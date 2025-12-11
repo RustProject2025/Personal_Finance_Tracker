@@ -339,7 +339,7 @@ fn prev_index(curr: Option<usize>, len: usize) -> usize {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     enable_raw_mode()?;
     let mut stdout = io::stdout();
-    let _ = execute!(stdout, EnterAlternateScreen, EnableMouseCapture, SetSize(140, 40));
+    let _ = execute!(stdout, EnterAlternateScreen, EnableMouseCapture, SetSize(140, 70));
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
