@@ -71,7 +71,7 @@ The core objective of this project is to develop a lightweight, high-performance
 This project fulfills the requirements of a robust command-line financial utility by combining a secure, persistent backend with a responsive terminal interface.
 
 ### 1. Secure HTTPS Backend & Database
-*From requirement: "Database stored in a HTTPS back-end server"*
+
 
 * **Implementation:** Built with **Axum** (Rust) exposing a RESTful API. Data is persisted in **PostgreSQL** using **SQLx** for async database interaction.
 * **Security:**
@@ -80,13 +80,13 @@ This project fulfills the requirements of a robust command-line financial utilit
     * **Cloud Ready:** Dockerized architecture allows the backend to be deployed on platforms like DigitalOcean with HTTPS support, while the frontend automatically switches between local and remote endpoints (`api.rs`).
 
 ### 2. Multi-Type Account Management
-*From requirement: "Different types of accounts, including checking and credit cards"*
+
 
 * **Implementation:** The system supports creating arbitrary account types (Checking, Savings, Credit, Cash) with custom names and currencies.
 * **Real-time Aggregation:** Account balances are not static; they are dynamically calculated or updated atomically upon every transaction to ensure the dashboard always reflects the true financial state (`accounts.rs`).
 
 ### 3. Transaction Logging & Atomic Transfers
-*From requirement: "Transaction logging" and "Ability to enter complex transactions"*
+
 
 * **Implementation:**
     * **Income & Expenses:** Users can record detailed transactions with dates, descriptions, and amounts. The system automatically categorizes positive values as income and negative as expenses (`transactions.rs`).
@@ -94,7 +94,7 @@ This project fulfills the requirements of a robust command-line financial utilit
     * **History Tracking:** All transactions are timestamped and retrievable via time-range filters.
 
 ### 4. Customizable Category System
-*From requirement: "Categories"*
+
 
 * **Implementation:**
     * Users can create custom categories (e.g., Food, Rent, Salary) to organize their finances (`categories.rs`).
@@ -102,7 +102,7 @@ This project fulfills the requirements of a robust command-line financial utilit
     * Transactions are strictly validated against existing user categories to maintain data consistency.
 
 ### 5. Smart Budgeting & Monitoring
-*From requirement: "Optionally, Budgeting tools and financial reports"*
+
 
 * **Implementation:**
     * **Budget Tracking:** Users can set monthly monetary limits for specific categories or globally (`budgets.rs`).
@@ -110,7 +110,7 @@ This project fulfills the requirements of a robust command-line financial utilit
     * **Visual Alerts:** The TUI dashboard automatically highlights budgets in **Red** if they are exceeded, providing immediate visual feedback on financial health.
 
 ### 6. Interactive TUI (Command-Line Interface)
-*From requirement: "Design and build a new command-line utility"*
+
 
 * **Implementation:** Built using **Ratatui** and **Crossterm**.
 * **Dashboard View:** A unified "Single Pane of Glass" dashboard displaying Accounts, Recent Transactions, and Budget statuses simultaneously.
