@@ -125,9 +125,36 @@ cargo run
 
 > This is all you need to test the app.
 
+# Step 1: User Onboarding & Authentication
 
+## 1. Launch Screen
 
-> **Login & Register**
+When the application starts, it automatically enters the **LOGIN** screen.
+
+## 2. Switch to Registration Mode
+
+**Action:** Press `Ctrl + r`.
+
+## 3. Register a New User
+
+**Action:**
+
+* **Username:** Enter `demo_user`
+* Press `Tab` to switch to the password field
+* **Password:** Enter `password123`
+* Press `Enter` to submit
+
+**Result:**
+A green message appears in the bottom status bar:
+**"Success: ... Please Login."**
+
+## 4. Login
+
+**Action:**
+Press `Ctrl + r` again to switch back to login mode.
+Enter the newly created username and password, then press `Enter`.
+The app navigates to the **Dashboard** main screen.
+
 
 https://github.com/user-attachments/assets/19441314-6df0-4115-b859-2402e02cf2b1
 
