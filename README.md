@@ -113,9 +113,15 @@ This project fulfills the requirements of a robust command-line financial utilit
 
 > **Pre-configurataion:**
 
-> cd frontend
+```bash
 
-> cargo run
+cd frontend
+
+cargo build
+
+cargo run
+
+```
 
 > This is all you need to test the app.
 
