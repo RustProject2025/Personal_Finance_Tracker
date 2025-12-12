@@ -180,6 +180,7 @@ https://github.com/user-attachments/assets/19441314-6df0-4115-b859-2402e02cf2b1
 **Action:** Press `a` again.
 
 **Popup Operation:**
+
 `Name: Savings` → `Currency: USD` → `Enter`
 
 If the account name already exits, it will trigger an Error.
@@ -205,7 +206,7 @@ Press **Right Arrow (→)** to move the highlight to the rightmost **"Categories
 
 * **Name:** Enter `Car` → `Enter`
 
-If the account name already exits, it will trigger an Error.
+If the Category name already exits, it will trigger an Error.
 
 ### 3. Verification
 
