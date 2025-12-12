@@ -219,6 +219,50 @@ https://github.com/user-attachments/assets/b60f7211-3089-4807-b730-c21c4179e649
 
 
 
+## Step 4: Transaction Logging
+
+
+### 1. Select an Account
+
+Press **Left Arrow (←)** to return to the **Accounts** panel.
+Use **Up/Down** to select **Chase Checking**.
+
+
+
+### 2. Scenario A: Log an Income Transaction
+
+**Action:** Press `t` (Transaction).
+
+**Popup Operation** (follow TUI prompts):
+
+1. **Amount:** Enter positive `5000` (represents income) → `Down`
+2. **Desc:** Enter `Monthly Salary` → `Down`
+3. **Category:** Enter `Salary` (or its ID) → `Enter`
+
+**Result:**
+A green income record appears in the middle **Transactions** panel.
+`Amount` is shown as **5000.00**, and the account balance increases by 5000.
+
+
+### 3. Scenario B: Log an Expense Transaction
+
+**Action:** Press `t` again.
+
+**Popup Operation:**
+
+1. **Amount:** Enter negative `-50` (represents expense) → `Down`
+2. **Desc:** Enter `Lunch` → `Down`
+3. **Category:** Enter `Food` → `Enter`
+
+**Result:**
+A red expense record appears in the **Transactions** panel showing **-50.00**.
+The account balance automatically decreases from 5000 to **4950**.
+
+
+https://github.com/user-attachments/assets/28e688de-8ae0-4bd6-bd0a-c42ba53f5329
+
+
+
 ---
 
 
