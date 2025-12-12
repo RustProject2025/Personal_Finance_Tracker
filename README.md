@@ -510,6 +510,10 @@ If you have any questions or run into problems, please:
 ### Shiyao Sun
 
 - Frontend:
+   - TUI Architecture & Event Loop.Designed and implemented the asynchronous terminal user interface using Ratatui and Tokio.Built a robust state management system using the AppState enum to handle seamless transitions between Login, Dashboard, and various Modal Popups.
+   - Robust API Client Integration.Developed the ApiClient module using Reqwest to communicate with the backend REST API.
+   - Interactive Modal System.Engineered a flexible PopupType system to handle complex multi-step data entry forms (AddTransaction, Transfer) directly within the terminal.
+   - Data Visualization & UX.Designed the "Single Pane of Glass" dashboard layout using Ratatui constraints to display Accounts, Transactions, and Budgets simultaneously.Implemented dynamic visual feedback, such as conditional coloring (Red/Green) for expenses vs. income and highlighting over-budget categories to provide immediate financial insights.
 
 ### Yiyang Wang
 
