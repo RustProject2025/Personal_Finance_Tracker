@@ -18,7 +18,7 @@
 
 | Name        | Student Number | Email                      |
 | ----------- | -------------- | -------------------------- |
-| Shiyao Sun  | 1234567890     | @mail.utoronto.ca          |
+| Shiyao Sun  | 1006769793     | shiyao.sun@mail.utoronto.ca          |
 | Yiyang Wang | 1010033278     | ydev.wang@mail.utoronto.ca |
 
 ---
@@ -46,6 +46,89 @@
 > This is all you need to test the app.
 
 ---
+
+## Motivation
+
+For students and early-career professionals, managing finances across scattered checking accounts, credit cards, cash, and e-wallets often leads to disorganized records and painful reconciliation. Existing solutions typically fall into three categories with distinct drawbacks:
+* **Commercial Apps:** Often come with high subscription costs and potential privacy risks regarding sensitive financial data.
+* **Bank Apps:** Limited to a single institution, lacking a unified view across multiple assets and robust budgeting tools.
+* **Spreadsheets:** Flexible but require high maintenance, lacking automation and real-time capabilities.
+
+This project aims to build a **Rust-based Full-Stack Personal Finance Tracker**, combining a high-performance Terminal User Interface (TUI) with a secure HTTPS backend. Our motivation is to provide a **zero-cost, local-first, and fully controllable** financial management tool for privacy-conscious technical users. By leveraging Rust's strong type system and memory safety, we solve the issues of "bloated" and "opaque" traditional financial software, allowing users to efficiently control their cash flow via keyboard interactions.
+
+## Objectives
+
+The core objective of this project is to develop a lightweight, high-performance, and extensible personal finance system. Our technical goals include:
+
+1.  **High-Performance Backend:** Develop a RESTful API using the **Axum** framework and **SQLx** for asynchronous database operations, ensuring high concurrency handling and type safety.
+2.  **Immersive Terminal Experience:** Build a text-based user interface using **Ratatui**, tailored for developers and geeks who prefer pure keyboard navigation, instant data refreshing, and intuitive dashboards.
+3.  **Data Integrity & Security:** Guarantee financial data accuracy through **PostgreSQL** transactions (ACID compliance) and secure user data with **Argon2** password hashing and token-based session management.
+4.  **Modern Deployment Architecture:** Adopt a decoupled frontend-backend architecture with **Docker** and **Docker Compose** support, facilitating both local execution and cloud deployment (e.g., DigitalOcean).
+
+
+## Features
+
+This project fulfills the requirements of a robust command-line financial utility by combining a secure, persistent backend with a responsive terminal interface.
+
+### 1. Secure HTTPS Backend & Database
+*From requirement: "Database stored in a HTTPS back-end server"*
+
+* **Implementation:** Built with **Axum** (Rust) exposing a RESTful API. Data is persisted in **PostgreSQL** using **SQLx** for async database interaction.
+* **Security:**
+    * **Authentication:** User passwords are securely hashed using **Argon2** (via `auth.rs`).
+    * **Session Management:** Implements token-based authentication with session expiration and invalidation logic (`middleware.rs`).
+    * **Cloud Ready:** Dockerized architecture allows the backend to be deployed on platforms like DigitalOcean with HTTPS support, while the frontend automatically switches between local and remote endpoints (`api.rs`).
+
+### 2. Multi-Type Account Management
+*From requirement: "Different types of accounts, including checking and credit cards"*
+
+* **Implementation:** The system supports creating arbitrary account types (Checking, Savings, Credit, Cash) with custom names and currencies.
+* **Real-time Aggregation:** Account balances are not static; they are dynamically calculated or updated atomically upon every transaction to ensure the dashboard always reflects the true financial state (`accounts.rs`).
+
+### 3. Transaction Logging & Atomic Transfers
+*From requirement: "Transaction logging" and "Ability to enter complex transactions"*
+
+* **Implementation:**
+    * **Income & Expenses:** Users can record detailed transactions with dates, descriptions, and amounts. The system automatically categorizes positive values as income and negative as expenses (`transactions.rs`).
+    * **Atomic Transfers:** Transferring money between accounts (e.g., Checking to Savings) uses **ACID database transactions** (`pool.begin()`). This ensures that if the deduction fails, the addition is rolled back, preventing data corruption.
+    * **History Tracking:** All transactions are timestamped and retrievable via time-range filters.
+
+### 4. Customizable Category System
+*From requirement: "Categories"*
+
+* **Implementation:**
+    * Users can create custom categories (e.g., Food, Rent, Salary) to organize their finances (`categories.rs`).
+    * The database schema supports hierarchical data (`parent_id`), allowing for future expansion into sub-categories.
+    * Transactions are strictly validated against existing user categories to maintain data consistency.
+
+### 5. Smart Budgeting & Monitoring
+*From requirement: "Optionally, Budgeting tools and financial reports"*
+
+* **Implementation:**
+    * **Budget Tracking:** Users can set monthly monetary limits for specific categories or globally (`budgets.rs`).
+    * **Real-time Calculation:** The backend dynamically calculates `spent` vs `remaining` amounts based on the current month's transaction history.
+    * **Visual Alerts:** The TUI dashboard automatically highlights budgets in **Red** if they are exceeded, providing immediate visual feedback on financial health.
+
+### 6. Interactive TUI (Command-Line Interface)
+*From requirement: "Design and build a new command-line utility"*
+
+* **Implementation:** Built using **Ratatui** and **Crossterm**.
+* **Dashboard View:** A unified "Single Pane of Glass" dashboard displaying Accounts, Recent Transactions, and Budget statuses simultaneously.
+* **Keyboard-First Workflow:**
+    * **Popup Forms:** Modal windows for data entry (Add Transaction, Transfer, etc.) without losing context.
+    * **Navigation:** Intuitive `Tab` / `Arrow Key` navigation and shortcuts (`t` for Transaction, `x` for Transfer) designed for power users.
+    * **Asynchronous UI:** The frontend uses `tokio` to perform non-blocking API calls, ensuring the interface remains responsive during data synchronization.
+
+
+
+
+
+
+
+
+
+
+
 
 # Reproducibility Guide
 
