@@ -158,6 +158,35 @@ The app navigates to the **Dashboard** main screen.
 
 https://github.com/user-attachments/assets/19441314-6df0-4115-b859-2402e02cf2b1
 
+以下为 **Markdown (.md) 英文版本**，保持结构清晰、格式专业：
+
+---
+
+## Step 2: Account Management
+
+
+### 1. Add a Checking Account
+
+**Action:** Press `a` (Add Account).
+
+**Popup Operation:**
+
+* **Name:** Enter `Chase Checking` → press `Down`
+* **Currency:** Enter `USD`
+* Press `Enter` to submit
+
+
+### 2. Add a Savings Account
+
+**Action:** Press `a` again.
+
+**Popup Operation:**
+`Name: Savings` → `Currency: USD` → `Enter`
+If the account name already exits, it will trigger an Error.
+
+
+https://github.com/user-attachments/assets/ee17f23d-eb26-4ec8-82a4-a87165d578de
+
 
 
 
