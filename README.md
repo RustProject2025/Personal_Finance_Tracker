@@ -302,7 +302,31 @@ Press **Right Arrow (→)** to move to the **Budgets** panel.
 https://github.com/user-attachments/assets/096f8a39-fb9c-4b2e-b701-b9558ecec3dd
 
 
+## Step 6: Transfers
 
+
+### 1. Initiate a Transfer
+
+**Action:** Press `x` (Transfer).
+
+**Popup Operation:**
+
+1. **From ID:** Enter the ID of the Checking account (e.g., `1`) → `Down`
+2. **To ID:** Enter the ID of the Savings account (e.g., `2`) → `Down`
+3. **Amount:** Enter `1000` (positive) → `Enter`
+
+
+
+### 2. Verify the Result
+
+* The **Checking** account balance decreases by **1000**
+* The **Savings** account balance increases by **1000**
+* The transaction list automatically generates **two records**:
+  • one transfer-out
+  • one transfer-in
+
+
+https://github.com/user-attachments/assets/cb2c8b19-d9eb-49ba-ad0c-8fd00f294ea9
 
 
 ---
