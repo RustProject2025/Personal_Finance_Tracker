@@ -427,6 +427,21 @@ pub async fn transfer(
         return Err(AppError::BadRequest("Transfer amount must be positive".to_string()));
     }
 
+    // Check if from_account has sufficient balance
+    let from_balance: rust_decimal::Decimal = sqlx::query_scalar::<_, String>(
+        "SELECT balance::text FROM accounts WHERE id = $1"
+    )
+    .bind(req.from_account_id)
+    .fetch_one(&pool)
+    .await
+    .map_err(|e| AppError::InternalServerError(format!("Database error: {}", e)))?
+    .parse()
+    .map_err(|_| AppError::InternalServerError("Failed to parse balance".to_string()))?;
+
+    if from_balance < amount_decimal {
+        return Err(AppError::BadRequest(format!("Insufficient balance. Account has {}, but trying to transfer {}", from_balance, amount_decimal)));
+    }
+
     // Parse date
     let date = if let Some(date_str) = req.date {
         NaiveDate::parse_from_str(&date_str, "%Y-%m-%d")
