@@ -125,17 +125,17 @@ cargo run
 
 > This is all you need to test the app.
 
-# Step 1: User Onboarding & Authentication
+## Step 1: User Onboarding & Authentication
 
-## 1. Launch Screen
+### 1. Launch Screen
 
 When the application starts, it automatically enters the **LOGIN** screen.
 
-## 2. Switch to Registration Mode
+### 2. Switch to Registration Mode
 
 **Action:** Press `Ctrl + r`.
 
-## 3. Register a New User
+### 3. Register a New User
 
 **Action:**
 
@@ -148,7 +148,7 @@ When the application starts, it automatically enters the **LOGIN** screen.
 A green message appears in the bottom status bar:
 **"Success: ... Please Login."**
 
-## 4. Login
+### 4. Login
 
 **Action:**
 Press `Ctrl + r` again to switch back to login mode.
