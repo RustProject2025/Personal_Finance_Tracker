@@ -329,6 +329,31 @@ https://github.com/user-attachments/assets/096f8a39-fb9c-4b2e-b701-b9558ecec3dd
 https://github.com/user-attachments/assets/cb2c8b19-d9eb-49ba-ad0c-8fd00f294ea9
 
 
+
+
+## Step 7: Delete & Cleanup
+
+
+### 1. Delete an Item
+
+* Select the previously added Transfer record or any Budget entry.
+* **Action:** Press `d` (Delete).
+
+
+
+### 2. Confirmation Popup
+
+* A red dialog titled **"DELETE CONFIRMATION"** appears.
+* The system asks you to type the **exact name** of the target (e.g., account name or category name) for secondary confirmation.
+* Once the correct name is entered, the item is permanently removed.
+
+
+
+https://github.com/user-attachments/assets/88e3962d-07d3-4b32-9221-e5096bdc770f
+
+
+
+
 ---
 
 
