@@ -181,11 +181,39 @@ https://github.com/user-attachments/assets/19441314-6df0-4115-b859-2402e02cf2b1
 
 **Popup Operation:**
 `Name: Savings` → `Currency: USD` → `Enter`
+
 If the account name already exits, it will trigger an Error.
 
 
 https://github.com/user-attachments/assets/ee17f23d-eb26-4ec8-82a4-a87165d578de
 
+
+
+## Step 3: Category Management
+
+
+### 1. Switch Focus
+
+Press **Right Arrow (→)** to move the highlight to the rightmost **"Categories"** panel.
+
+
+### 2. Add an Expense Category
+
+**Action:** Press `c` again.
+
+**Popup Operation:**
+
+* **Name:** Enter `Car` → `Enter`
+
+If the account name already exits, it will trigger an Error.
+
+### 3. Verification
+
+The **Categories** table now displays the newly added categories and their IDs.
+
+
+
+https://github.com/user-attachments/assets/b60f7211-3089-4807-b730-c21c4179e649
 
 
 
