@@ -125,6 +125,13 @@ cargo run
 
 > This is all you need to test the app.
 
+
+
+![Image](https://github.com/user-attachments/assets/b28bdc5c-7c9c-4357-8e48-72fee4926bff)
+
+
+
+
 ---
 
 
@@ -535,3 +542,8 @@ If you have any questions or run into problems, please:
 Through developing this project in Rust, we learned that Rust's strong type system and ownership model help catch bugs at compile time, particularly around memory safety. Working with async Rust (Tokio) and the Axum web framework demonstrated how Rust achieves high performance while maintaining code safety. The comprehensive error handling with `Result` types made our code more robust, and building a TUI frontend with Ratatui showcased Rust's versatility beyond web development.
 
 This project demonstrates how Rust can be used to build a full-stack application with both a RESTful API backend and a terminal-based user interface. The combination of type safety, performance, and developer experience makes Rust an excellent choice for building reliable financial applications.
+
+
+
+
+
