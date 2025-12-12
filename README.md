@@ -31,23 +31,8 @@
 
 ---
 
-# Features
 
----
-
-# User Guide
-
-> **Pre-configurataion:**
-
-> cd frontend
-
-> cargo run
-
-> This is all you need to test the app.
-
----
-
-## Motivation
+# Motivation
 
 For students and early-career professionals, managing finances across scattered checking accounts, credit cards, cash, and e-wallets often leads to disorganized records and painful reconciliation. Existing solutions typically fall into three categories with distinct drawbacks:
 * **Commercial Apps:** Often come with high subscription costs and potential privacy risks regarding sensitive financial data.
@@ -56,7 +41,7 @@ For students and early-career professionals, managing finances across scattered 
 
 This project aims to build a **Rust-based Full-Stack Personal Finance Tracker**, combining a high-performance Terminal User Interface (TUI) with a secure HTTPS backend. Our motivation is to provide a **zero-cost, local-first, and fully controllable** financial management tool for privacy-conscious technical users. By leveraging Rust's strong type system and memory safety, we solve the issues of "bloated" and "opaque" traditional financial software, allowing users to efficiently control their cash flow via keyboard interactions.
 
-## Objectives
+# Objectives
 
 The core objective of this project is to develop a lightweight, high-performance, and extensible personal finance system. Our technical goals include:
 
@@ -66,7 +51,7 @@ The core objective of this project is to develop a lightweight, high-performance
 4.  **Modern Deployment Architecture:** Adopt a decoupled frontend-backend architecture with **Docker** and **Docker Compose** support, facilitating both local execution and cloud deployment (e.g., DigitalOcean).
 
 
-## Features
+# Features
 
 This project fulfills the requirements of a robust command-line financial utility by combining a secure, persistent backend with a responsive terminal interface.
 
@@ -122,7 +107,19 @@ This project fulfills the requirements of a robust command-line financial utilit
 
 
 
+---
 
+# User Guide
+
+> **Pre-configurataion:**
+
+> cd frontend
+
+> cargo run
+
+> This is all you need to test the app.
+
+---
 
 
 
