@@ -1,6 +1,7 @@
 ## Table of Contents
 
 - [Team Information](#team-information)
+- [Video Slide Presentation](#video-slide-presentation)
 - [Video Demo](#video-demo)
 - [Motivation](#motivation)
 - [Objectives](#objectives)
@@ -8,7 +9,6 @@
 - [User Guide](#user-guide)
 - [Reproducibility Guide](#reproducibility-guide)
 - [Contribution Guidelines](#contribution-guidelines)
-- [Deployment Information](#deployment-information)
 - [Individual Contributions](#individual-contributions)
 - [Concluding Remarks](#concluding-remarks)
 
@@ -433,3 +433,15 @@ If you have any questions or run into problems, please:
   - Developed RESTful API endpoints using Axum framework for accounts, transactions, categories, budgets, and transfers
   - Implemented input validation and error handling with balance checks for transfers and user permission verification
   - Created Docker Compose configuration to orchestrate database and backend services for local development
+
+> **Note:** Large lines-of-code contributions were caused by accidentally committing the /target directory earlier in the project. This has now been resolved by adding it to .gitignore.
+
+---
+
+# Concluding Remarks
+
+## Lessons Learned
+
+Through developing this project in Rust, we learned that Rust's strong type system and ownership model help catch bugs at compile time, particularly around memory safety. Working with async Rust (Tokio) and the Axum web framework demonstrated how Rust achieves high performance while maintaining code safety. The comprehensive error handling with `Result` types made our code more robust, and building a TUI frontend with Ratatui showcased Rust's versatility beyond web development.
+
+This project demonstrates how Rust can be used to build a full-stack application with both a RESTful API backend and a terminal-based user interface. The combination of type safety, performance, and developer experience makes Rust an excellent choice for building reliable financial applications.
