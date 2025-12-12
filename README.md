@@ -127,7 +127,9 @@ cargo run
 
 
 
-https://github.com/user-attachments/assets/b28bdc5c-7c9c-4357-8e48-72fee4926bff
+> **Login & Register**
+https://github.com/user-attachments/assets/19441314-6df0-4115-b859-2402e02cf2b1
+
 
 
 
