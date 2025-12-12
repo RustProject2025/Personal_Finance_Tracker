@@ -127,7 +127,7 @@ cargo run
 
 
 
-![Image](https://github.com/user-attachments/assets/b28bdc5c-7c9c-4357-8e48-72fee4926bff)
+https://github.com/user-attachments/assets/b28bdc5c-7c9c-4357-8e48-72fee4926bff
 
 
 
