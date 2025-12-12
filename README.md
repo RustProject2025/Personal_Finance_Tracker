@@ -158,7 +158,6 @@ The app navigates to the **Dashboard** main screen.
 
 https://github.com/user-attachments/assets/19441314-6df0-4115-b859-2402e02cf2b1
 
-以下为 **Markdown (.md) 英文版本**，保持结构清晰、格式专业：
 
 ---
 
