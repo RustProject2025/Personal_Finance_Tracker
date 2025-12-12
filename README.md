@@ -128,6 +128,7 @@ cargo run
 
 
 > **Login & Register**
+
 https://github.com/user-attachments/assets/19441314-6df0-4115-b859-2402e02cf2b1
 
 
