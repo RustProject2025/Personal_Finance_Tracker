@@ -263,6 +263,48 @@ https://github.com/user-attachments/assets/28e688de-8ae0-4bd6-bd0a-c42ba53f5329
 
 
 
+
+
+## Step 5: Budgeting
+
+
+### 1. Switch Focus
+
+Press **Right Arrow (→)** to move to the **Budgets** panel.
+
+
+
+### 2. Set a Budget
+
+**Action:** Press `b` (Budget).
+
+**Popup Operation:**
+
+1. **Amount:** Enter `100` (set a Food budget of 100) → `Down`
+2. **Category ID:** Enter the ID of the `Food` category (e.g., `2`) → `Enter`
+
+
+
+### 3. Verify Budget Status
+
+* The list now shows **Food 50/100**
+* The entry is **green**, because the expense (50) is still below the budget (100)
+
+
+
+### 4. Trigger Overspending (Optional Demonstration)
+
+* Go back to Accounts and log another Food expense of **-60**
+* The Budgets panel will update to **Food 110/100**, and the text automatically turns **red**, clearly indicating overspending
+
+
+
+https://github.com/user-attachments/assets/096f8a39-fb9c-4b2e-b701-b9558ecec3dd
+
+
+
+
+
 ---
 
 
