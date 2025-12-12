@@ -29,5 +29,5 @@ ENV RUST_LOG=info
 
 EXPOSE 3000
 
-CMD ["./backend"]
+CMD sh -c "sleep 5 && sqlx migrate run --database-url \"$DATABASE_URL\" && ./backend"
 
